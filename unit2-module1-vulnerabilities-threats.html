@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 · Module 1 — Cyber Security Vulnerabilities & Threats</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300;1,400;1,600&family=Epilogue:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #f7f3ee;
+  --bg2:       #efe9e0;
+  --bg3:       #e8dfd3;
+  --surface:   #ffffff;
+  --border:    #ddd5c8;
+  --border2:   #c9bfb2;
+  --text:      #18130e;
+  --body:      #3a2f26;
+  --muted:     #8a7868;
+  --faint:     #b5a898;
+
+  /* Topic accent colors */
+  --intro:  #b5451b;   /* burnt sienna */
+  --soft:   #2563a8;   /* cobalt blue  */
+  --net:    #1a7a5e;   /* forest green */
+  --open:   #7b3fa0;   /* plum         */
+  --auth:   #c97c10;   /* amber        */
+  --aware:  #c0392b;   /* crimson      */
+  --threat: #1e5799;   /* navy         */
+  --impact: #2d6a2d;   /* dark green   */
+
+  --font-d: 'Fraunces', serif;
+  --font-b: 'Epilogue', sans-serif;
+  --font-m: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 16px;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* SUBTLE PAPER GRAIN */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  height:54px; display:flex; align-items:center;
+  padding:0 28px; gap:8px;
+  background:rgba(247,243,238,0.93);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand {
+  font-family:var(--font-d);
+  font-size:14px; font-weight:700; font-style:italic;
+  color:var(--text); margin-right:8px; white-space:nowrap;
+}
+.nav-links { display:flex; gap:4px; flex-wrap:wrap; overflow:hidden; }
+.nav-links a {
+  font-family:var(--font-m);
+  font-size:10.5px; color:var(--muted);
+  text-decoration:none; padding:4px 9px;
+  border-radius:4px; letter-spacing:0.3px;
+  transition:all 0.15s; white-space:nowrap;
+}
+.nav-links a:hover { color:var(--text); background:var(--bg2); }
+
+/* ── HERO ── */
+.hero {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center;
+  padding:100px 24px 80px;
+  overflow:hidden;
+  background: linear-gradient(155deg, #fdfaf6 0%, #f3ebe0 45%, #e9ddd0 100%);
+}
+
+/* Geometric background decoration */
+.hero-deco {
+  position:absolute; inset:0; pointer-events:none;
+  overflow:hidden;
+}
+.hero-deco::before {
+  content:'';
+  position:absolute;
+  width:600px; height:600px;
+  border:1px solid rgba(181,69,27,0.07);
+  border-radius:50%;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+}
+.hero-deco::after {
+  content:'';
+  position:absolute;
+  width:900px; height:900px;
+  border:1px solid rgba(181,69,27,0.04);
+  border-radius:50%;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+}
+.deco-sq {
+  position:absolute;
+  width:280px; height:280px;
+  border:1px solid rgba(37,99,168,0.06);
+  transform:rotate(45deg);
+  top:12%; right:8%;
+}
+.deco-sq2 {
+  position:absolute;
+  width:180px; height:180px;
+  border:1px solid rgba(123,63,160,0.05);
+  transform:rotate(20deg);
+  bottom:15%; left:6%;
+}
+
+.hero-eyebrow {
+  font-family:var(--font-m);
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted);
+  border:1px solid var(--border2);
+  background:var(--surface);
+  padding:6px 20px; border-radius:2px;
+  margin-bottom:32px;
+  position:relative; z-index:1;
+  animation:fu 0.7s ease both;
+}
+
+.hero h1 {
+  font-family:var(--font-d);
+  font-size:clamp(42px, 8vw, 96px);
+  font-weight:900; line-height:0.92;
+  position:relative; z-index:1;
+  animation:fu 0.85s ease 0.1s both;
+  margin-bottom:8px;
+}
+.hero h1 .t1 { display:block; color:var(--text); }
+.hero h1 .t2 { display:block; color:var(--intro); font-style:italic; }
+.hero h1 .t3 {
+  display:block;
+  font-family:var(--font-m);
+  font-size:0.22em;
+  font-weight:400;
+  letter-spacing:4px;
+  color:var(--faint);
+  font-style:normal;
+  margin-top:18px;
+}
+
+.hero-sub {
+  font-size:17px; color:var(--muted);
+  max-width:580px; margin:28px auto 44px;
+  font-style:italic;
+  position:relative; z-index:1;
+  animation:fu 1s ease 0.2s both;
+}
+
+.hero-index {
+  display:flex; flex-wrap:wrap;
+  gap:10px; justify-content:center;
+  position:relative; z-index:1;
+  animation:fu 1s ease 0.3s both;
+  max-width:700px;
+}
+.idx-pill {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 16px; border-radius:6px;
+  font-family:var(--font-m); font-size:10.5px;
+  text-decoration:none; border:1px solid;
+  transition:all 0.2s; letter-spacing:0.3px;
+}
+.idx-pill:hover { transform:translateY(-2px); }
+.idx-pill .num { font-weight:600; opacity:0.6; }
+
+@keyframes fu { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── CONTENT ── */
+.wrap { max-width:1060px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
+
+/* ── TOPIC HEADER ── */
+.topic { margin-bottom:72px; scroll-margin-top:66px; }
+
+.topic-header {
+  display:flex; align-items:flex-start; gap:20px;
+  padding:28px 32px;
+  border-radius:12px 12px 0 0;
+  border:1px solid; border-bottom:none;
+  position:relative; overflow:hidden;
+}
+.topic-header::after {
+  content:'';
+  position:absolute; top:0; right:0;
+  width:200px; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.06));
+  pointer-events:none;
+}
+.topic-num {
+  font-family:var(--font-d);
+  font-size:52px; font-weight:900;
+  line-height:1; opacity:0.12;
+  position:absolute; right:24px; bottom:-4px;
+}
+.topic-icon { font-size:32px; margin-top:2px; flex-shrink:0; }
+.topic-meta { flex:1; }
+.topic-tag {
+  font-family:var(--font-m); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase;
+  opacity:0.6; margin-bottom:6px;
+}
+.topic-title {
+  font-family:var(--font-d);
+  font-size:clamp(22px,4vw,34px);
+  font-weight:700; line-height:1.05;
+}
+.topic-body {
+  background:var(--surface);
+  border:1px solid; border-top:none;
+  border-radius:0 0 12px 12px;
+  padding:32px;
+}
+
+/* DEFINITION BOX */
+.defbox {
+  border-left:3px solid;
+  background:var(--bg2);
+  border-radius:0 8px 8px 0;
+  padding:18px 22px;
+  margin-bottom:22px;
+}
+.defbox .dlabel {
+  font-family:var(--font-m); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:7px; opacity:0.55;
+}
+.defbox .dtext { font-size:15.5px; color:var(--body); line-height:1.85; }
+.defbox .dtext strong { font-weight:600; color:var(--text); }
+
+/* PROSE */
+.prose { font-size:15.5px; color:var(--body); line-height:1.85; margin-bottom:14px; }
+.prose strong { font-weight:600; color:var(--text); }
+.prose em { font-style:italic; color:var(--text); }
+.prose:last-child { margin-bottom:0; }
+
+/* SUBHEADING */
+.sh {
+  font-family:var(--font-d);
+  font-size:19px; font-weight:700;
+  margin:24px 0 12px; color:var(--text);
+}
+.sh2 {
+  font-family:var(--font-b);
+  font-size:15px; font-weight:700;
+  letter-spacing:0.2px;
+  margin:16px 0 8px; color:var(--text);
+  text-transform:uppercase;
+}
+
+/* GRID 2 */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:16px 0; }
+@media(max-width:680px){.g2{grid-template-columns:1fr;}}
+
+/* GRID 3 */
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:16px 0; }
+@media(max-width:780px){.g3{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.g3{grid-template-columns:1fr;}}
+
+/* CARD */
+.card {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px;
+  transition:transform 0.2s;
+}
+.card:hover { transform:translateY(-2px); }
+.card .card-icon { font-size:24px; margin-bottom:10px; }
+.card .card-title {
+  font-family:var(--font-d); font-size:16px; font-weight:600;
+  margin-bottom:7px;
+}
+.card .card-text { font-size:13.5px; color:var(--muted); line-height:1.75; }
+
+/* HINGLISH CALLOUT */
+.hinglish {
+  background:linear-gradient(135deg, rgba(181,69,27,0.05), rgba(37,99,168,0.04));
+  border:1px solid var(--border2);
+  border-left:3px solid var(--intro);
+  border-radius:0 8px 8px 0;
+  padding:16px 20px;
+  margin:16px 0;
+  font-size:15px; color:var(--body); line-height:1.8;
+}
+.hinglish .hl-label {
+  font-family:var(--font-m); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--intro); margin-bottom:7px;
+}
+.hinglish strong { color:var(--text); font-weight:600; }
+
+/* VULNERABILITY DETAIL BLOCK */
+.vuln-block {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.vuln-block-header {
+  padding:16px 22px;
+  display:flex; align-items:center; gap:12px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer; user-select:none;
+  transition:background 0.15s;
+}
+.vuln-block-header:hover { background:var(--bg3); }
+.vuln-block-header .vh-icon { font-size:20px; }
+.vuln-block-header .vh-title {
+  font-family:var(--font-d); font-size:16px; font-weight:700;
+  flex:1;
+}
+.vuln-block-header .vh-arrow {
+  font-size:12px; color:var(--muted);
+  transition:transform 0.2s;
+}
+.vuln-block-header.open .vh-arrow { transform:rotate(90deg); }
+.vuln-block-body {
+  display:none;
+  padding:20px 22px;
+}
+.vuln-block-body.open { display:block; }
+
+/* CODE BLOCK */
+.codeblock {
+  background:#1c1710;
+  border-radius:8px; padding:18px 20px;
+  margin:14px 0; overflow-x:auto;
+}
+.codeblock pre {
+  font-family:var(--font-m); font-size:12.5px;
+  line-height:1.7; color:#c4b89c;
+}
+.ck { color:#e8846a; }
+.cs { color:#7ec99a; }
+.cn { color:#79b3d4; }
+.cmt { color:#6a7856; font-style:italic; }
+.ch { color:#e8c97a; }
+
+/* RISK TABLE */
+.risk-table {
+  width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;
+}
+.risk-table th {
+  background:var(--bg3); padding:11px 14px;
+  text-align:left; font-family:var(--font-m);
+  font-size:10.5px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--muted);
+  border:1px solid var(--border);
+}
+.risk-table td {
+  padding:11px 14px; border:1px solid var(--border);
+  color:var(--body); vertical-align:top;
+}
+.risk-table tr:hover td { background:rgba(0,0,0,0.015); }
+
+/* SEVERITY BADGES */
+.sev {
+  display:inline-block;
+  font-family:var(--font-m); font-size:10px;
+  padding:2px 8px; border-radius:2px; border:1px solid;
+  letter-spacing:0.5px; white-space:nowrap;
+}
+.sev-c { color:#b5451b; border-color:rgba(181,69,27,0.4); background:rgba(181,69,27,0.08); }
+.sev-h { color:#c97c10; border-color:rgba(201,124,16,0.4); background:rgba(201,124,16,0.07); }
+.sev-m { color:#2563a8; border-color:rgba(37,99,168,0.4); background:rgba(37,99,168,0.07); }
+.sev-l { color:#1a7a5e; border-color:rgba(26,122,94,0.4); background:rgba(26,122,94,0.07); }
+
+/* IMPACT FLOW */
+.impact-flow {
+  display:flex; flex-direction:column; gap:0;
+  margin:16px 0;
+}
+.if-step {
+  display:flex; gap:16px; align-items:flex-start;
+  padding:14px 0;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+.if-step:last-child { border-bottom:none; }
+.if-num {
+  font-family:var(--font-d); font-size:12px; font-weight:700;
+  min-width:30px; height:30px; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:2px;
+}
+.if-content { flex:1; }
+.if-title { font-weight:700; font-size:15px; margin-bottom:3px; }
+.if-desc { font-size:14px; color:var(--muted); line-height:1.7; }
+
+/* TAG ROW */
+.tagrow { display:flex; flex-wrap:wrap; gap:7px; margin:10px 0; }
+.tag {
+  font-family:var(--font-m); font-size:11px;
+  padding:3px 10px; border-radius:3px;
+  border:1px solid; color:var(--muted);
+}
+.t-red   { color:var(--intro); border-color:rgba(181,69,27,0.3); background:rgba(181,69,27,0.05); }
+.t-blue  { color:var(--soft); border-color:rgba(37,99,168,0.3); background:rgba(37,99,168,0.05); }
+.t-green { color:var(--net); border-color:rgba(26,122,94,0.3); background:rgba(26,122,94,0.05); }
+.t-amber { color:var(--auth); border-color:rgba(201,124,16,0.3); background:rgba(201,124,16,0.05); }
+.t-plum  { color:var(--open); border-color:rgba(123,63,160,0.3); background:rgba(123,63,160,0.05); }
+
+/* REAL CASE BOX */
+.realcase {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-top:3px solid;
+  border-radius:0 0 10px 10px;
+  padding:20px 24px;
+  margin-top:16px;
+}
+.realcase .rc-label {
+  font-family:var(--font-m); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:8px; opacity:0.5;
+}
+.realcase .rc-title { font-weight:700; font-size:15px; margin-bottom:6px; }
+.realcase .rc-text { font-size:14px; color:var(--muted); line-height:1.75; }
+
+/* STATS ROW */
+.stats-row {
+  display:flex; gap:20px; flex-wrap:wrap;
+  margin:20px 0;
+}
+.stat-box {
+  flex:1; min-width:140px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px; padding:18px 20px;
+  text-align:center;
+}
+.stat-num {
+  font-family:var(--font-d);
+  font-size:32px; font-weight:900;
+  line-height:1; margin-bottom:4px;
+}
+.stat-label {
+  font-family:var(--font-m);
+  font-size:10px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--muted);
+}
+
+/* QUIZ */
+.quiz-wrap {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px; padding:32px;
+  margin-bottom:64px;
+}
+.quiz-wrap h2 {
+  font-family:var(--font-d);
+  font-size:32px; font-weight:700;
+  margin-bottom:6px;
+}
+.quiz-sub {
+  font-size:14px; color:var(--muted);
+  font-family:var(--font-m); margin-bottom:28px;
+}
+.qcard {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px; padding:20px;
+  margin-bottom:14px;
+}
+.qtxt { font-weight:600; font-size:15px; margin-bottom:13px; color:var(--text); }
+.qopts { display:flex; flex-direction:column; gap:7px; }
+.qbtn {
+  padding:9px 15px; border-radius:6px; border:1px solid var(--border);
+  cursor:pointer; font-size:14px; font-family:var(--font-b);
+  background:transparent; color:var(--text); text-align:left;
+  transition:all 0.15s;
+}
+.qbtn:hover { border-color:var(--border2); background:var(--bg3); }
+.qbtn.correct { border-color:#27ae60; background:rgba(39,174,96,0.08); color:#1a6e3a; }
+.qbtn.wrong   { border-color:#c0392b; background:rgba(192,57,43,0.08); color:#a0291f; }
+.qfb {
+  margin-top:9px; font-size:13.5px;
+  padding:9px 14px; border-radius:6px;
+  display:none;
+}
+.qfb.show { display:block; }
+.qfb.ok  { background:rgba(39,174,96,0.07); color:#1a6e3a; border:1px solid rgba(39,174,96,0.2); }
+.qfb.bad { background:rgba(192,57,43,0.07); color:#a0291f; border:1px solid rgba(192,57,43,0.2); }
+
+/* FOOTER */
+footer {
+  background:var(--text); color:rgba(255,255,255,0.45);
+  padding:44px 28px 32px; text-align:center;
+  position:relative; z-index:1;
+}
+.ftr-cr {
+  display:inline-flex; flex-direction:column; align-items:center; gap:5px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px; padding:18px 36px; margin-bottom:14px;
+}
+.ftr-name { font-family:var(--font-d); font-size:20px; color:#fff; font-style:italic; }
+.ftr-label { font-family:var(--font-m); font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.3); }
+.ftr-sub   { font-family:var(--font-m); font-size:11px; color:rgba(255,255,255,0.3); }
+
+/* FADE IN */
+.fi { opacity:0; transform:translateY(26px); transition:opacity 0.65s ease, transform 0.65s ease; }
+.fi.vis { opacity:1; transform:translateY(0); }
+
+/* SECTION BREAK */
+.sec-break { height:1px; background:linear-gradient(90deg,transparent,var(--border2),transparent); margin:60px 0; }
+
+@media(max-width:620px){
+  .topic-header { padding:20px; }
+  .topic-body { padding:20px; }
+  .quiz-wrap { padding:22px 18px; }
+  .hero-index { gap:7px; }
+  .idx-pill { font-size:9.5px; padding:6px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">Unit 2 · M1</span>
+  <div class="nav-links">
+    <a href="#t1">Intro</a>
+    <a href="#t2">Software Vulns</a>
+    <a href="#t3">Complex Networks</a>
+    <a href="#t4">Open Access</a>
+    <a href="#t5">Weak Auth</a>
+    <a href="#t6">Poor Awareness</a>
+    <a href="#t7">Threats & Risks</a>
+    <a href="#t8">Impact</a>
+    <a href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-deco">
+    <div class="deco-sq"></div>
+    <div class="deco-sq2"></div>
+  </div>
+
+  <div class="hero-eyebrow">Unit 2 · Module 1 · Bhanu Pratap Singh Rajpurohit</div>
+  <h1>
+    <span class="t1">Cyber Security</span>
+    <span class="t2">Vulnerabilities & Threats</span>
+    <span class="t3">8 Topics · Deep Dive · English + Hinglish Examples</span>
+  </h1>
+  <p class="hero-sub">
+    Understanding the weaknesses in systems, networks, and human behaviour that
+    attackers exploit — and the real-world consequences of ignoring them.
+  </p>
+
+  <div class="hero-index">
+    <a class="idx-pill" href="#t1" style="color:var(--intro);border-color:rgba(181,69,27,0.3);background:rgba(181,69,27,0.05);"><span class="num">01</span> Introduction to Vulnerabilities</a>
+    <a class="idx-pill" href="#t2" style="color:var(--soft);border-color:rgba(37,99,168,0.3);background:rgba(37,99,168,0.05);"><span class="num">02</span> Software Vulnerabilities</a>
+    <a class="idx-pill" href="#t3" style="color:var(--net);border-color:rgba(26,122,94,0.3);background:rgba(26,122,94,0.05);"><span class="num">03</span> Complex Network Architectures</a>
+    <a class="idx-pill" href="#t4" style="color:var(--open);border-color:rgba(123,63,160,0.3);background:rgba(123,63,160,0.05);"><span class="num">04</span> Open Access to Org. Data</a>
+    <a class="idx-pill" href="#t5" style="color:var(--auth);border-color:rgba(201,124,16,0.3);background:rgba(201,124,16,0.05);"><span class="num">05</span> Weak Authentication</a>
+    <a class="idx-pill" href="#t6" style="color:var(--aware);border-color:rgba(192,57,43,0.3);background:rgba(192,57,43,0.05);"><span class="num">06</span> Poor Cyber Security Awareness</a>
+    <a class="idx-pill" href="#t7" style="color:var(--threat);border-color:rgba(30,87,153,0.3);background:rgba(30,87,153,0.05);"><span class="num">07</span> Common Threats & Risks</a>
+    <a class="idx-pill" href="#t8" style="color:var(--impact);border-color:rgba(45,106,45,0.3);background:rgba(45,106,45,0.05);"><span class="num">08</span> Impact on Organizations</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CONTENT
+═══════════════════════════════════════════════ -->
+<div class="wrap">
+
+<!-- ───────────────────────────────────────────
+     TOPIC 1 — INTRODUCTION
+────────────────────────────────────────────── -->
+<div style="height:72px;"></div>
+<div id="t1" class="topic fi">
+  <div class="topic-header" style="background:rgba(181,69,27,0.05);border-color:rgba(181,69,27,0.2);">
+    <div class="topic-icon">🔍</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--intro)">Topic 01</div>
+      <div class="topic-title" style="color:var(--intro)">Introduction to Cyber Security Vulnerabilities</div>
+    </div>
+    <div class="topic-num">01</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(181,69,27,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--intro);">
+      <div class="dlabel" style="color:var(--intro)">Core Definition</div>
+      <div class="dtext">A <strong>Vulnerability</strong> is a weakness or flaw in a system, network, application, or process that can be exploited by a threat actor to gain unauthorized access, cause damage, or disrupt services. Vulnerabilities may exist in hardware, software, processes, or even in people.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Socho ek ghar hai jisme ek purani tooti hui khidki hai — wo khidki ek <strong>vulnerability</strong> hai. Koi bhi chor us khidki se andar aa sakta hai. Alag se, agar chor (threat actor) us khidki ko dhundhta hai aur use use karta hai — wo <strong>exploitation</strong> hai. Cyber world mein exactly yahi hota hai — systems mein "tooti hui khidkiyan" hoti hain jo hackers dhundhte hain.
+    </div>
+
+    <div class="sh">Key Distinctions: Vulnerability vs Threat vs Risk</div>
+
+    <table class="risk-table">
+      <thead>
+        <tr><th>Term</th><th>Definition</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Vulnerability</strong></td>
+          <td>A weakness in the system — the flaw itself</td>
+          <td>Unpatched OS, weak password, open port</td>
+        </tr>
+        <tr>
+          <td><strong>Threat</strong></td>
+          <td>A potential event or actor that could exploit a vulnerability</td>
+          <td>A hacker, a malware, a disgruntled employee</td>
+        </tr>
+        <tr>
+          <td><strong>Risk</strong></td>
+          <td>The likelihood × impact of a threat exploiting a vulnerability</td>
+          <td>Risk = Threat × Vulnerability × Asset Value</td>
+        </tr>
+        <tr>
+          <td><strong>Exploit</strong></td>
+          <td>The actual code or technique used to take advantage of a vulnerability</td>
+          <td>EternalBlue exploit for MS17-010</td>
+        </tr>
+        <tr>
+          <td><strong>Attack Surface</strong></td>
+          <td>Total sum of all points where an attacker can try to enter a system</td>
+          <td>All open ports, APIs, login pages, user endpoints</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="sh">Why Do Vulnerabilities Exist?</div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-icon">🧱</div>
+        <div class="card-title">Complexity of Modern Systems</div>
+        <div class="card-text">Aaj kal ek enterprise application mein millions of lines of code hote hain, hundreds of dependencies hote hain. Itni complexity mein bugs aana natural hai. More code = more surface area = more vulnerabilities.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Speed Over Security</div>
+        <div class="card-text">Development teams pressure mein hote hain "fast ship karo." Security testing skip ho jaati hai. Market pressure mein rushed code unreviewed vulnerabilities ke saath release ho jaata hai.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Human Error</div>
+        <div class="card-text">Misconfigured servers, wrong firewall rules, unencrypted backups — 95% of cybersecurity incidents involve human error at some level (IBM report).</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏳</div>
+        <div class="card-title">Legacy Systems</div>
+        <div class="card-text">Banks, hospitals, governments abhi bhi 20-30 saal purane software use karte hain. Un systems ke liye patches nahi aate aur nayi vulnerabilities unhe permanently exposed rakhti hain.</div>
+      </div>
+    </div>
+
+    <div class="sh">The Vulnerability Lifecycle</div>
+    <div class="impact-flow">
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(181,69,27,0.1);color:var(--intro);">1</div>
+        <div class="if-content">
+          <div class="if-title">Introduction</div>
+          <div class="if-desc">Vulnerability enters the system — during coding, configuration, design, or third-party component integration.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(181,69,27,0.1);color:var(--intro);">2</div>
+        <div class="if-content">
+          <div class="if-title">Discovery</div>
+          <div class="if-desc">Researcher (ethical) or attacker (malicious) discovers the vulnerability. The moment before public disclosure is called the <strong>Zero-Day window</strong>.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(181,69,27,0.1);color:var(--intro);">3</div>
+        <div class="if-content">
+          <div class="if-title">Disclosure</div>
+          <div class="if-desc">CVE (Common Vulnerabilities and Exposures) ID assigned. Vendor notified under responsible disclosure. Public announcement made after patch is ready.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(181,69,27,0.1);color:var(--intro);">4</div>
+        <div class="if-content">
+          <div class="if-title">Patch Release</div>
+          <div class="if-desc">Vendor releases a fix. Organizations must now <em>test and deploy</em> the patch quickly — the window between patch release and deployment is highly dangerous.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(181,69,27,0.1);color:var(--intro);">5</div>
+        <div class="if-content">
+          <div class="if-title">Remediation or Exploitation</div>
+          <div class="if-desc">Organizations patch and close the vulnerability — OR attackers exploit before patching happens. This race defines modern cybersecurity operations.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row fi">
+      <div class="stat-box"><div class="stat-num" style="color:var(--intro)">25,000+</div><div class="stat-label">CVEs Published per Year (2023)</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--soft)">15 days</div><div class="stat-label">Average time to exploit after disclosure</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--net)">60%</div><div class="stat-label">Breaches via unpatched vulnerabilities (Ponemon)</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--auth)">$4.45M</div><div class="stat-label">Average cost of a data breach (IBM 2023)</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 2 — SOFTWARE VULNERABILITIES
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t2" class="topic fi">
+  <div class="topic-header" style="background:rgba(37,99,168,0.05);border-color:rgba(37,99,168,0.2);">
+    <div class="topic-icon">💻</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--soft)">Topic 02</div>
+      <div class="topic-title" style="color:var(--soft)">Software Vulnerabilities</div>
+    </div>
+    <div class="topic-num" style="color:var(--soft)">02</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(37,99,168,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--soft);">
+      <div class="dlabel" style="color:var(--soft)">Definition</div>
+      <div class="dtext">A <strong>Software Vulnerability</strong> is a flaw, bug, or design weakness in a software application or operating system that can be exploited to violate the security policy of that system — allowing unauthorized actions such as privilege escalation, data theft, or remote code execution.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Software vulnerabilities wo jagah hain jahan programmer ne koi galti ki — ya design mein koi flaw reh gaya. Jaise ek calculator mein agar tum ek bohot bada number daalo aur wo crash ho jaaye — wo ek software vulnerability hai. Hackers aise "edge cases" dhundhte hain aur unhe use karte hain <strong>apna code chalane ya data churaane ke liye</strong>.
+    </div>
+
+    <div class="sh">Major Categories of Software Vulnerabilities</div>
+
+    <!-- Buffer Overflow -->
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">📦</span>
+        <span class="vh-title">1. Buffer Overflow</span>
+        <span class="sev sev-c">CRITICAL</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose"><strong>Definition:</strong> A buffer overflow occurs when a program writes more data into a buffer (temporary memory area) than it can hold. The excess data overflows into adjacent memory, overwriting other data — and in the worst case, the attacker's code gets executed.</p>
+        <div class="hinglish">
+          <div class="hl-label">Analogy</div>
+          Socho ek glass mein maximum 200ml paani aa sakta hai. Agar tum 500ml daalo — 300ml bahar girega. Memory mein ye "girna" kaafi dangerous hota hai — attacker us overflow space mein apna <strong>malicious code</strong> likh sakta hai aur computer use execute kar leta hai.
+        </div>
+        <div class="codeblock">
+<pre><span class="cmt">// Vulnerable C code — classic buffer overflow</span>
+<span class="ck">void</span> <span class="ch">processInput</span>(<span class="ck">char</span> *input) {
+    <span class="ck">char</span> buffer[<span class="cn">64</span>];             <span class="cmt">// Fixed 64-byte buffer</span>
+    <span class="ch">strcpy</span>(buffer, input);       <span class="cmt">// ⚠ No length check!</span>
+}
+<span class="cmt">// If input > 64 bytes → overflow → adjacent memory corrupted
+// Attacker sends 100 bytes with shellcode at byte 65–100
+// CPU executes attacker's code → full system compromise</span>
+
+<span class="cmt">// SECURE version:</span>
+<span class="ck">void</span> <span class="ch">processInput</span>(<span class="ck">char</span> *input) {
+    <span class="ck">char</span> buffer[<span class="cn">64</span>];
+    <span class="ch">strncpy</span>(buffer, input, <span class="ck">sizeof</span>(buffer) - <span class="cn">1</span>);  <span class="cmt">// Length-limited</span>
+    buffer[<span class="cn">63</span>] = <span class="cs">'\0'</span>;
+}</pre>
+        </div>
+        <p class="prose"><strong>Famous Example:</strong> MS Blaster worm (2003) — exploited a buffer overflow in Windows RPC service, infected 500,000+ systems within days. EternalBlue (used in WannaCry 2017) also leveraged a buffer overflow in SMB protocol.</p>
+        <div class="tagrow">
+          <span class="tag t-red">Stack overflow</span><span class="tag t-red">Heap overflow</span>
+          <span class="tag t-blue">Defense: ASLR</span><span class="tag t-blue">Defense: Stack canaries</span>
+          <span class="tag t-green">Defense: Bounds checking</span><span class="tag t-green">Safe functions (strncpy)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Injection Flaws -->
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">💉</span>
+        <span class="vh-title">2. Injection Flaws (SQL, Command, LDAP)</span>
+        <span class="sev sev-c">CRITICAL — OWASP #3</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose"><strong>Definition:</strong> Injection vulnerabilities occur when untrusted user input is sent to an interpreter (SQL engine, OS shell, LDAP server) without proper validation or sanitisation. The interpreter cannot distinguish between the intended command and the injected malicious data.</p>
+        <div class="hinglish">
+          <div class="hl-label">Hinglish Explanation</div>
+          Application user ka input leti hai aur use database ya OS ko deti hai. Agar user "normal text" ki jagah <strong>SQL ya shell command</strong> daal de — aur application filter na kare — toh interpreter "samajhta hai yeh ek real command hai" aur execute kar deta hai. Jaise ek waiter restaurant kitchen ko tumhara order bata raha ho, aur tum order mein likho "aur baaki sab log ka khana bhi mat laana" — aur kitchen maan le.
+        </div>
+        <div class="codeblock">
+<pre><span class="cmt">-- SQL Injection example</span>
+<span class="cmt">-- Application builds query:</span>
+<span class="cs">"SELECT * FROM users WHERE user='"</span> + input + <span class="cs">"'"</span>
+
+<span class="cmt">-- Attacker inputs:</span>  <span class="ck">admin' OR '1'='1</span>
+<span class="cmt">-- Resulting query (always TRUE → bypasses login):</span>
+<span class="ck">SELECT</span> * <span class="ck">FROM</span> users <span class="ck">WHERE</span> user=<span class="cs">'admin' OR '1'='1'</span>
+
+<span class="cmt">-- OS Command injection:</span>
+<span class="cmt">-- Application: ping [user_input]</span>
+<span class="cmt">-- Attacker: 8.8.8.8; rm -rf /var/www/html</span>
+<span class="cmt">-- Result: server's web root deleted!</span></pre>
+        </div>
+        <div class="tagrow">
+          <span class="tag t-red">SQL Injection</span><span class="tag t-red">OS Command Injection</span>
+          <span class="tag t-red">LDAP Injection</span><span class="tag t-red">XML/XPath Injection</span>
+          <span class="tag t-blue">Defense: Prepared statements</span>
+          <span class="tag t-blue">Defense: Input validation</span>
+          <span class="tag t-green">Defense: Parameterized queries</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zero-Day -->
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">☢️</span>
+        <span class="vh-title">3. Zero-Day Vulnerabilities</span>
+        <span class="sev sev-c">CRITICAL — No Patch Available</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose"><strong>Definition:</strong> A <strong>Zero-Day vulnerability</strong> is a software flaw that is unknown to the vendor and has no patch available. The term "zero-day" refers to the fact that the developer has had zero days to fix it. These are extremely valuable in criminal and espionage markets.</p>
+        <div class="hinglish">
+          <div class="hl-label">Hinglish Explanation</div>
+          Zero-day matlab — ek aisi vulnerability jiske baare mein <strong>software banane wali company ko pata hi nahi hai</strong>. Toh koi patch nahi, koi fix nahi. Sirf hacker jaanta hai. Ye hackers ke liye "golden ticket" hota hai. Dark web pe ek good zero-day ki price $1,00,000 se $2,500,000 tak ho sakti hai. Nation-state actors (governments) inhe cyberweapons ki tarah use karte hain.
+        </div>
+        <div class="realcase" style="border-top-color:var(--soft);">
+          <div class="rc-label">Real World — Stuxnet (2010)</div>
+          <div class="rc-title">4 Zero-Days in One Weapon</div>
+          <div class="rc-text">Stuxnet worm — US/Israel ka joint cyberweapon — ek saath <strong>4 zero-day vulnerabilities</strong> use karta tha. Ye Iran ke Natanz nuclear facility ke Siemens PLCs ko target karta tha. Centrifuges ko silently damage kar deta tha jabki monitoring screens "normal" dikhate rahe. Ye abhi tak discovered single most sophisticated cyber weapon hai.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insecure Deserialization / Other -->
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🔗</span>
+        <span class="vh-title">4. Other Critical Software Vulnerabilities</span>
+        <span class="sev sev-h">HIGH</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <table class="risk-table">
+          <thead><tr><th>Vulnerability</th><th>What it is</th><th>Example / Impact</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Use-After-Free</strong></td>
+              <td>Using memory after it has been freed/deallocated</td>
+              <td>Browser exploits — attacker controls freed memory pointer</td>
+            </tr>
+            <tr>
+              <td><strong>Race Condition</strong></td>
+              <td>Two processes access shared resource simultaneously — inconsistent state</td>
+              <td>TOCTOU (Time-of-Check-Time-of-Use) attacks in file systems</td>
+            </tr>
+            <tr>
+              <td><strong>Insecure Deserialization</strong></td>
+              <td>Deserializing untrusted data leads to arbitrary code execution</td>
+              <td>Java deserialization RCE — Apache Commons Collections</td>
+            </tr>
+            <tr>
+              <td><strong>Path Traversal</strong></td>
+              <td>Accessing files outside intended directory using "../"</td>
+              <td><code style="font-family:var(--font-m);font-size:12px;">../../etc/passwd</code> → reads system passwords</td>
+            </tr>
+            <tr>
+              <td><strong>Hardcoded Credentials</strong></td>
+              <td>Usernames/passwords baked directly into source code</td>
+              <td>Developer commits "password=admin123" to public GitHub repo</td>
+            </tr>
+            <tr>
+              <td><strong>Unpatched Libraries</strong></td>
+              <td>Third-party dependencies with known CVEs not updated</td>
+              <td>Log4Shell (CVE-2021-44228) — Log4j library RCE</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="hinglish">
+          <div class="hl-label">Hinglish Note</div>
+          Software vulnerabilities ke baare mein yaad rakho — ye sirf "apka code" nahi hai. <strong>Jo bhi library ya framework use kar rahe ho</strong>, unke vulnerabilities bhi tumhare system ke vulnerabilities ban jaate hain. 2022 mein Log4Shell ke time pe duniya bhar ki 93% organizations potentially vulnerable thiin — sirf ek popular Java logging library ki wajah se.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 3 — COMPLEX NETWORK ARCHITECTURES
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t3" class="topic fi">
+  <div class="topic-header" style="background:rgba(26,122,94,0.05);border-color:rgba(26,122,94,0.2);">
+    <div class="topic-icon">🌐</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--net)">Topic 03</div>
+      <div class="topic-title" style="color:var(--net)">Complex Network Architectures</div>
+    </div>
+    <div class="topic-num" style="color:var(--net)">03</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(26,122,94,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--net);">
+      <div class="dlabel" style="color:var(--net)">Definition</div>
+      <div class="dtext">Complex network architectures refer to the increasingly intricate, multi-layered, and distributed nature of modern IT networks — spanning on-premise systems, cloud platforms, remote workers, IoT devices, third-party integrations, and legacy infrastructure — all of which expand the <strong>attack surface</strong> and create new security blind spots.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Pehle ek office ka network ek simple setup hota tha — ek router, kuch computers, ek server. Ab socho ek badi company: <strong>cloud servers</strong> (AWS/Azure), <strong>remote employees</strong> ghar se kaam kar rahe hain, <strong>IoT devices</strong> (cameras, printers, AC controllers), <strong>third-party apps</strong> (Salesforce, Slack, SAP), <strong>legacy systems</strong> (20 saal purana payroll software). Ye sab milke ek bohot complex network banate hain — aur jitna complex network, utni zyada jagah attackers ghus sakte hain.
+    </div>
+
+    <div class="sh">Specific Network Architecture Vulnerabilities</div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="card-icon">🏝</div>
+        <div class="card-title">Flat Network Design</div>
+        <div class="card-text">Jab network segmented na ho — ek device compromise hone par attacker <strong>laterally move</strong> kar sakta hai poore network mein. Ek infected printer se banking server tak pahunch sakte hain. Principle: "Zero Trust" aur network segmentation honi chahiye.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔌</div>
+        <div class="card-title">Unmonitored Network Entry Points</div>
+        <div class="card-text">Remote access ports (RDP, SSH, VPN), forgotten dev/test environments, shadow IT (employees ka unauthorized cloud usage) — ye sab unmonitored entry points attackers ke liye open doors hain.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">☁️</div>
+        <div class="card-title">Multi-Cloud Complexity</div>
+        <div class="card-text">Organizations simultaneously AWS + Azure + GCP use karte hain. Har platform ki alag IAM policies, alag security controls. Misconfiguration ka risk dramatically increase ho jaata hai across multiple platforms.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧩</div>
+        <div class="card-title">Third-Party / Supply Chain Risk</div>
+        <div class="card-text">SolarWinds attack (2020) — ek trusted IT management software ke update mein malware inject hua. 18,000+ organizations including US Government agencies compromised — <em>through a vendor they trusted</em>.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📡</div>
+        <div class="card-title">Wireless Network Vulnerabilities</div>
+        <div class="card-text">WEP encryption broken (can be cracked in minutes), WPA2 KRACK vulnerability, rogue access points (Evil Twin), deauthentication attacks. Public WiFi pe corporate devices use karna — ek common attack vector.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">Outdated Network Devices</div>
+        <div class="card-text">Purane routers, switches, firewalls jinka firmware update nahi hota. Cisco, Juniper, Fortinet devices mein har saal critical CVEs nikalte hain. Unpatched network devices = permanent backdoor in your perimeter.</div>
+      </div>
+    </div>
+
+    <div class="sh">The Principle of Least Privilege & Network Segmentation</div>
+    <p class="prose"><strong>Network Segmentation</strong> means dividing a network into smaller isolated zones (VLANs, subnets, DMZs). Even if an attacker breaches one zone, they cannot freely move to others. This is the primary defense against lateral movement.</p>
+
+    <div class="impact-flow">
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(26,122,94,0.1);color:var(--net);">▶</div>
+        <div class="if-content">
+          <div class="if-title">DMZ (Demilitarized Zone)</div>
+          <div class="if-desc">Public-facing servers (web, email) are placed in a DMZ — a separate network zone between the internet and the internal network. A compromise of the web server doesn't automatically give access to the internal database.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(26,122,94,0.1);color:var(--net);">▶</div>
+        <div class="if-content">
+          <div class="if-title">Zero Trust Architecture</div>
+          <div class="if-desc">"Never trust, always verify." Every user, every device, every request must authenticate — even from inside the network. Traditional "perimeter security" assumption that everything inside the firewall is safe is abandoned.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(26,122,94,0.1);color:var(--net);">▶</div>
+        <div class="if-content">
+          <div class="if-title">Micro-Segmentation</div>
+          <div class="if-desc">Even within internal networks, each workload or application is isolated. Used heavily in cloud environments. If the HR application server is compromised, it physically cannot communicate with the Finance server.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="realcase" style="border-top-color:var(--net);">
+      <div class="rc-label">Real Case — SolarWinds Supply Chain Attack (2020)</div>
+      <div class="rc-title">The Most Sophisticated Network Compromise in History</div>
+      <div class="rc-text">Russian state-sponsored hackers (APT29/Cozy Bear) injected malicious code into SolarWinds Orion software update. Over <strong>18,000 organizations</strong> downloaded the trojanized update. Among victims: US Treasury, US Department of Homeland Security, Microsoft, Intel, Cisco. The attack remained undetected for <strong>9 months</strong>. Root cause: complex supply-chain network with insufficient integrity verification of software updates.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 4 — OPEN ACCESS
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t4" class="topic fi">
+  <div class="topic-header" style="background:rgba(123,63,160,0.05);border-color:rgba(123,63,160,0.2);">
+    <div class="topic-icon">🔓</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--open)">Topic 04</div>
+      <div class="topic-title" style="color:var(--open)">Open Access to Organizational Data</div>
+    </div>
+    <div class="topic-num" style="color:var(--open)">04</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(123,63,160,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--open);">
+      <div class="dlabel" style="color:var(--open)">Definition</div>
+      <div class="dtext"><strong>Open access to organizational data</strong> refers to the situation where sensitive data — customer records, financial data, intellectual property, employee information — is accessible by more people, systems, or external parties than is necessary for legitimate business operations, violating the <strong>Principle of Least Privilege</strong>.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Socho ek office mein ek almari hai jisme salary records, customer data, aur trade secrets hain. Agar us almari ki <strong>chabi har kisi ke paas ho</strong> — peon se leke intern tak — ye open access vulnerability hai. Data security ka golden rule hai: <strong>"Need to Know" basis</strong> — sirf wahi insaan data dekhe jise us data ki actually zaroorat hai apna kaam karne ke liye.
+    </div>
+
+    <div class="sh">How Open Access Creates Vulnerabilities</div>
+
+    <div class="g3">
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <div class="card-title">Excessive User Permissions</div>
+        <div class="card-text">Employees given admin rights they don't need. Junior developers with production database access. Marketing team with HR data visibility. If their account is compromised → massive data exposure.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🪣</div>
+        <div class="card-title">Misconfigured Cloud Storage</div>
+        <div class="card-text">S3 buckets, Azure Blobs, GCS buckets set to "Public Read." In 2019, Capital One breach exposed 100M+ customer records due to a misconfigured AWS S3 bucket — ₹800 crore fine.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌍</div>
+        <div class="card-title">Publicly Accessible APIs</div>
+        <div class="card-text">APIs without proper authentication — exposing customer data, internal functions, or admin endpoints to the public internet. OWASP API Security Top 10 lists "Broken Object Level Authorization" as #1 API risk.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <div class="card-title">Unencrypted Data at Rest</div>
+        <div class="card-text">Databases, backup files, log files stored without encryption. If a server is compromised or a hard drive is stolen — all data is immediately readable without needing to crack any passwords.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">👴</div>
+        <div class="card-title">Orphaned/Stale Accounts</div>
+        <div class="card-text">Ex-employees ke accounts deactivate nahi hue. Vendors ke access revoke nahi hua project completion ke baad. These dormant accounts are used by attackers — and often have extensive permissions from their active days.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <div class="card-title">Third-Party Over-Provisioning</div>
+        <div class="card-text">Contractors and vendors given broader access than needed. A billing vendor with access to your entire ERP system. Supply chain attacks often exploit these over-privileged third-party connections.</div>
+      </div>
+    </div>
+
+    <div class="sh">Data Classification Framework</div>
+    <p class="prose">Organizations should classify all data so appropriate access controls can be applied:</p>
+
+    <table class="risk-table">
+      <thead><tr><th>Classification Level</th><th>Description</th><th>Access Control</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sev sev-c">Top Secret / Restricted</span></td><td>Most sensitive — breach would cause critical damage</td><td>Need-to-know only, MFA + encryption mandatory</td><td>M&A plans, encryption keys, source code</td></tr>
+        <tr><td><span class="sev sev-h">Confidential</span></td><td>Internal sensitive — breach causes significant harm</td><td>Role-based access, encrypted at rest and transit</td><td>Customer PII, financial records, salary data</td></tr>
+        <tr><td><span class="sev sev-m">Internal</span></td><td>For internal use only — not for public sharing</td><td>Employee access only, basic access logs</td><td>Internal procedures, meeting minutes, org charts</td></tr>
+        <tr><td><span class="sev sev-l">Public</span></td><td>Intended for public consumption</td><td>No restriction needed</td><td>Marketing materials, press releases, public APIs</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sh">Key Defense: Principle of Least Privilege (PoLP)</div>
+    <p class="prose">Every user, program, and system component should have access to <em>only the minimum resources necessary</em> to perform its legitimate function — nothing more. This limits the blast radius of any single compromised account or component.</p>
+
+    <div class="tagrow">
+      <span class="tag t-plum">Role-Based Access Control (RBAC)</span>
+      <span class="tag t-plum">Attribute-Based Access Control (ABAC)</span>
+      <span class="tag t-plum">Just-In-Time (JIT) access provisioning</span>
+      <span class="tag t-plum">Privileged Access Management (PAM)</span>
+      <span class="tag t-plum">Regular access reviews & re-certification</span>
+      <span class="tag t-plum">Data Loss Prevention (DLP) tools</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 5 — WEAK AUTHENTICATION
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t5" class="topic fi">
+  <div class="topic-header" style="background:rgba(201,124,16,0.05);border-color:rgba(201,124,16,0.2);">
+    <div class="topic-icon">🔑</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--auth)">Topic 05</div>
+      <div class="topic-title" style="color:var(--auth)">Weak Authentication Mechanisms</div>
+    </div>
+    <div class="topic-num" style="color:var(--auth)">05</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(201,124,16,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--auth);">
+      <div class="dlabel" style="color:var(--auth)">Definition</div>
+      <div class="dtext"><strong>Weak authentication</strong> refers to inadequate mechanisms for verifying the identity of users, devices, or systems before granting access. When authentication can be bypassed, guessed, stolen, or replayed, unauthorized access becomes trivial regardless of all other security controls.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Authentication matlab — <strong>"prove karo tum wahi ho jo tum bol rahe ho."</strong> Ek strong lock ghar ko secure karta hai. Ek weak authentication weak lock ki tarah hai — duplicate key banana easy hai, ya padlock hi pick karna easy hai. Agar authentication weak hai toh baaki sari security useless ho jaati hai. 81% breaches (Verizon DBIR) involve weak or stolen credentials.
+    </div>
+
+    <div class="sh">Types of Weak Authentication Vulnerabilities</div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🧮</span>
+        <span class="vh-title">1. Weak Password Policies</span>
+        <span class="sev sev-h">HIGH</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose">Organizations allow users to set passwords like "password", "123456", "company2024". These are brute-forced in seconds. NIST 800-63B guidelines recommend: minimum 8 chars, no mandatory complexity requirements (they cause worse passwords), no forced periodic rotation (causes predictable patterns like Password1→Password2), check against known breached password lists.</p>
+        <div class="hinglish">
+          <div class="hl-label">Statistics</div>
+          Most common passwords of 2023 (NordPass): "123456" (4.5 crore times used), "password" (2.3 crore times), "admin" (4.4 crore times). Ye sab seconds mein crack ho jaate hain. India mein "india123", "iloveyou" bhi top lists mein hain.
+        </div>
+        <table class="risk-table">
+          <thead><tr><th>Password Type</th><th>Time to Crack (Modern Hardware)</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:var(--font-m)">6 lowercase letters</td><td style="color:var(--aware)">Instantly</td></tr>
+            <tr><td style="font-family:var(--font-m)">8 mixed characters</td><td style="color:var(--auth)">8 hours</td></tr>
+            <tr><td style="font-family:var(--font-m)">12 mixed + symbols</td><td style="color:var(--net)">226 years</td></tr>
+            <tr><td style="font-family:var(--font-m)">16 random characters</td><td style="color:var(--net)">Trillions of years</td></tr>
+            <tr><td style="font-family:var(--font-m)">4-word passphrase</td><td style="color:var(--net)">Extremely long (high entropy)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🔄</span>
+        <span class="vh-title">2. Missing or Bypassed Multi-Factor Authentication (MFA)</span>
+        <span class="sev sev-c">CRITICAL</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose"><strong>MFA (Multi-Factor Authentication)</strong> requires users to prove identity via two or more of: <em>Something you know</em> (password), <em>Something you have</em> (phone/token), <em>Something you are</em> (biometric). Without MFA, a stolen password = instant full access.</p>
+        <div class="g2">
+          <div>
+            <p class="prose"><strong>MFA Bypass Techniques attackers use:</strong></p>
+            <ul style="font-size:14px;color:var(--muted);margin-left:18px;line-height:1.9;">
+              <li><strong>SIM Swapping</strong> — attacker convinces telecom to transfer victim's phone number. All SMS OTPs now go to attacker.</li>
+              <li><strong>MFA Fatigue / Push Bombing</strong> — attacker sends 50+ MFA push notifications. User gets frustrated and approves to stop them.</li>
+              <li><strong>Adversary-in-the-Middle (AiTM)</strong> — real-time phishing proxies (Evilginx2) intercept the session token after MFA is completed.</li>
+              <li><strong>OTP Phishing</strong> — fake login page collects password AND live OTP, replays both to real site.</li>
+            </ul>
+          </div>
+          <div>
+            <p class="prose"><strong>Strongest to Weakest MFA:</strong></p>
+            <div class="impact-flow">
+              <div class="if-step" style="padding:8px 0;">
+                <div class="if-num" style="background:rgba(26,122,94,0.1);color:var(--net);min-width:24px;height:24px;font-size:11px;">1</div>
+                <div class="if-content"><div class="if-title" style="font-size:13px;">FIDO2/Passkeys (Hardware key)</div><div class="if-desc" style="font-size:12px;">Phishing-proof. YubiKey. Cannot be intercepted.</div></div>
+              </div>
+              <div class="if-step" style="padding:8px 0;">
+                <div class="if-num" style="background:rgba(201,124,16,0.1);color:var(--auth);min-width:24px;height:24px;font-size:11px;">2</div>
+                <div class="if-content"><div class="if-title" style="font-size:13px;">Authenticator App (TOTP)</div><div class="if-desc" style="font-size:12px;">Google/Microsoft Authenticator. Can be AiTM'd.</div></div>
+              </div>
+              <div class="if-step" style="padding:8px 0;">
+                <div class="if-num" style="background:rgba(192,57,43,0.1);color:var(--aware);min-width:24px;height:24px;font-size:11px;">3</div>
+                <div class="if-content"><div class="if-title" style="font-size:13px;">SMS OTP</div><div class="if-desc" style="font-size:12px;">Vulnerable to SIM swap. Better than nothing.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">♻️</span>
+        <span class="vh-title">3. Credential Reuse & Stuffing</span>
+        <span class="sev sev-h">HIGH</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose"><strong>Credential stuffing</strong> is an automated attack where attackers take username-password pairs from a previously breached database and try them against other services. Because people reuse passwords across multiple sites, this attack has a ~0.1-2% success rate — but when run against millions of credentials, that means thousands of compromised accounts.</p>
+        <div class="hinglish">
+          <div class="hl-label">Hinglish Explanation</div>
+          Tumne Facebook pe ek password use kiya — "rahul@1995". Ek din Facebook ka data breach hota hai. Ab hackers tumhara email + password leke Amazon, Gmail, bank — sabpe try karte hain. Agar tumne same password everywhere use kiya hai — <strong>sab compromise ho jaata hai</strong>. 65% users same password multiple sites pe use karte hain (Google survey).
+        </div>
+        <div class="codeblock">
+<pre><span class="cmt"># Automated credential stuffing attack flow</span>
+
+<span class="ch">1. Attacker buys breach database</span>:
+   <span class="cs">email: rahul@gmail.com | password: MyDog2018!</span>
+   <span class="cs">email: priya@yahoo.com  | password: India@123</span>
+   <span class="cs">...</span> <span class="cmt">(millions of records)</span>
+
+<span class="ch">2. Automated tool (Sentry MBA, Burp Suite, custom Python)</span>:
+   → Try each pair against target site's login
+   → Rate-limited requests (to evade detection)
+   → Rotate IP addresses via proxy pools
+
+<span class="ch">3. Result</span>:
+   → <span class="ck">SUCCESS: rahul@gmail.com → Amazon account compromised</span>
+   → Attacker: purchases made, data exfiltrated, sold on dark web</pre>
+        </div>
+        <div class="tagrow">
+          <span class="tag t-amber">Defense: Password Manager</span>
+          <span class="tag t-amber">Unique password per site</span>
+          <span class="tag t-amber">CAPTCHA / Bot detection</span>
+          <span class="tag t-amber">Login anomaly detection</span>
+          <span class="tag t-amber">Breach database monitoring (HaveIBeenPwned)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🍪</span>
+        <span class="vh-title">4. Session Management Weaknesses</span>
+        <span class="sev sev-h">HIGH</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose">After authentication, the server issues a <strong>session token</strong> (cookie). Weak session management includes: predictable session IDs, tokens that never expire, tokens transmitted over HTTP (not HTTPS), tokens stored in localStorage (accessible to XSS), and not invalidating sessions on logout.</p>
+        <div class="hinglish">
+          <div class="hl-label">Hinglish Explanation</div>
+          Login karne ke baad server ek <strong>"token"</strong> deta hai — jaise hotel room ki key card. Agar ye key card predictable hai (Room 101 ka token hamesha "A101" hota hai), ya expire nahi hoti, ya koi bhi copy kar sakta hai — toh bina password jaane bhi koi room mein ghus sakta hai. Session hijacking exactly yahi karta hai.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 6 — POOR AWARENESS
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t6" class="topic fi">
+  <div class="topic-header" style="background:rgba(192,57,43,0.05);border-color:rgba(192,57,43,0.2);">
+    <div class="topic-icon">🧠</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--aware)">Topic 06</div>
+      <div class="topic-title" style="color:var(--aware)">Poor Cyber Security Awareness</div>
+    </div>
+    <div class="topic-num" style="color:var(--aware)">06</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(192,57,43,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--aware);">
+      <div class="dlabel" style="color:var(--aware)">Definition</div>
+      <div class="dtext"><strong>Poor cyber security awareness</strong> refers to the lack of knowledge, training, or vigilance among employees and individuals regarding cyber threats, secure practices, and social engineering tactics — making them the most exploited vulnerability in any organization. Humans are consistently identified as the <strong>weakest link in the security chain</strong>.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Ek company lakh rupaye ke firewalls, antivirus, aur encryption mein invest kar sakti hai — lekin agar ek employee ne ek phishing email pe click kar diya, poori security bypass ho gayi. <strong>Technology hack karna mushkil hota hai, insaan ko hack karna easy hota hai</strong>. Isliye attackers "social engineering" focus karte hain — human psychology exploit karna.
+    </div>
+
+    <div class="sh">How Poor Awareness Enables Attacks</div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="card-icon">🎣</div>
+        <div class="card-title">Phishing Susceptibility</div>
+        <div class="card-text">33% of employees click phishing links in tests (Proofpoint 2023). Without awareness training, employees cannot distinguish legitimate from fake emails — spoofed domains, urgent language, authority impersonation all work effectively.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🖥</div>
+        <div class="card-title">Shadow IT</div>
+        <div class="card-text">Employees use unauthorized apps (personal Dropbox, WhatsApp for work data, free online tools) without IT knowledge. These unmanaged tools lack corporate security controls — data leakage, unmonitored access, compliance violations.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💾</div>
+        <div class="card-title">Removable Media Risk</div>
+        <div class="card-text">USB drives found in parking lots — 75% of people plug in unknown USB drives (IBM study). A baited USB can auto-run malware, establish C2 connection, or silently exfiltrate data. Stuxnet spread via USB drops.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <div class="card-title">BYOD (Bring Your Own Device) Risk</div>
+        <div class="card-text">Personal phones with corporate email and data — no MDM (Mobile Device Management), no encryption, no remote wipe capability. If lost or stolen, corporate data is exposed. Malicious personal apps can access corporate accounts.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <div class="card-title">Physical Security Oversights</div>
+        <div class="card-text">Tailgating (following authorised person through secure door), shoulder surfing (reading screen in public), leaving computers unlocked, writing passwords on sticky notes. Cyber attacks don't always happen remotely.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Oversharing on Social Media</div>
+        <div class="card-text">Employees posting org charts, project names, office locations on LinkedIn, Instagram. Attackers use OSINT (Open Source Intelligence) to build spear-phishing attacks using this information. "OSINT reconnaissance" is the first step of most targeted attacks.</div>
+      </div>
+    </div>
+
+    <div class="sh">Social Engineering Attack Methods (Exploiting Poor Awareness)</div>
+
+    <table class="risk-table">
+      <thead><tr><th>Attack</th><th>Technique</th><th>Why It Works</th><th>Defense</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Phishing</strong></td>
+          <td>Fake emails mimicking trusted entities</td>
+          <td>Urgency, authority, fear triggers</td>
+          <td>Training, email filters, SPF/DKIM</td>
+        </tr>
+        <tr>
+          <td><strong>Pretexting</strong></td>
+          <td>Fabricated scenario to gain trust ("I'm from IT helpdesk")</td>
+          <td>People want to be helpful; authority compliance</td>
+          <td>Verify caller identity via callback to known number</td>
+        </tr>
+        <tr>
+          <td><strong>Baiting</strong></td>
+          <td>Leave infected USB/CD with enticing label</td>
+          <td>Curiosity is a fundamental human trait</td>
+          <td>USB port blocking, media policy</td>
+        </tr>
+        <tr>
+          <td><strong>Quid Pro Quo</strong></td>
+          <td>"Help me with this small thing, I'll give you X"</td>
+          <td>Reciprocity principle</td>
+          <td>Clear vendor/IT interaction policies</td>
+        </tr>
+        <tr>
+          <td><strong>Vishing</strong></td>
+          <td>Voice calls impersonating banks/IT/government</td>
+          <td>Real-time pressure, authoritative voice</td>
+          <td>Never share OTP on call; verify independently</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="sh">Building a Security Awareness Culture</div>
+    <div class="g3">
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Regular Training Programs</div>
+        <div class="card-text">Monthly security awareness modules, not just annual checkbox training. Role-specific training — finance team gets CEO fraud scenarios, IT staff gets technical training.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">Simulated Phishing Tests</div>
+        <div class="card-text">Send fake phishing emails to employees. Track click rates. Immediately provide education to those who click. Metrics improve dramatically — click rates drop from 30%→5% with consistent training.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚨</div>
+        <div class="card-title">Clear Reporting Culture</div>
+        <div class="card-text">Employees must feel safe reporting suspicious activity — without fear of punishment. "If you see something, say something." Early reports can stop an attack before damage occurs.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 7 — COMMON THREATS
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t7" class="topic fi">
+  <div class="topic-header" style="background:rgba(30,87,153,0.05);border-color:rgba(30,87,153,0.2);">
+    <div class="topic-icon">⚠️</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--threat)">Topic 07</div>
+      <div class="topic-title" style="color:var(--threat)">Common Cyber Threats and Risks</div>
+    </div>
+    <div class="topic-num" style="color:var(--threat)">07</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(30,87,153,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--threat);">
+      <div class="dlabel" style="color:var(--threat)">Definition</div>
+      <div class="dtext">A <strong>Cyber Threat</strong> is any malicious act or circumstance that has the potential to exploit a vulnerability and cause harm to an information system, organization, or individual. Threats can be intentional (hackers, nation-states, insiders) or unintentional (human error, natural disasters, system failures).</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Vulnerability ek <strong>kamzori</strong> hai (jo system mein already hai). Threat ek <strong>khatara</strong> hai — koi ya kuch jo us kamzori ka faayda uthana chahta hai. Aur Risk = agar threat ne vulnerability exploit ki toh kitna nuksan hoga. Teen cheezein milke "security risk" banate hain.
+    </div>
+
+    <div class="sh">Comprehensive Threat Catalogue</div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🦠</span>
+        <span class="vh-title">1. Malware (Malicious Software)</span>
+        <span class="sev sev-c">CRITICAL</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose">Malware is any software intentionally designed to disrupt, damage, or gain unauthorized access to computer systems. It is the broadest category of cyber threat.</p>
+        <table class="risk-table">
+          <thead><tr><th>Type</th><th>Behavior</th><th>Famous Example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Virus</strong></td><td>Attaches to legitimate files, spreads when executed, corrupts data</td><td>ILOVEYOU (2000) — $10B damage</td></tr>
+            <tr><td><strong>Worm</strong></td><td>Self-replicating, spreads across networks without user action</td><td>WannaCry (2017) — NHS, telecom systems</td></tr>
+            <tr><td><strong>Trojan</strong></td><td>Disguised as legitimate software, opens backdoor</td><td>Emotet banking trojan</td></tr>
+            <tr><td><strong>Ransomware</strong></td><td>Encrypts victim files, demands payment for decryption key</td><td>Colonial Pipeline (2021) — $4.4M ransom</td></tr>
+            <tr><td><strong>Spyware</strong></td><td>Silently monitors activity, keylogging, screen capture</td><td>Pegasus — targeted journalists &amp; politicians</td></tr>
+            <tr><td><strong>Rootkit</strong></td><td>Hides attacker's presence in OS, persists across reboots</td><td>Sony BMG rootkit (2005)</td></tr>
+            <tr><td><strong>Adware</strong></td><td>Forces ads, may bundle with other malware</td><td>Fireball — infected 250M computers</td></tr>
+            <tr><td><strong>Fileless Malware</strong></td><td>Lives in memory only — no file on disk, evades traditional AV</td><td>PowerShell-based attacks, Cobalt Strike beacons</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🎭</span>
+        <span class="vh-title">2. Social Engineering Threats</span>
+        <span class="sev sev-h">HIGH</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose">Social engineering exploits human psychology rather than technical vulnerabilities. It is the most effective attack vector because it bypasses technical defenses by manipulating the operator — the human — directly.</p>
+        <div class="hinglish">
+          <div class="hl-label">Hinglish Explanation</div>
+          "Technology secure hai, insaan nahi." Ek $1M ka firewall ek employee pe kaam nahi aata agar wo khud attacker ko access de de. BEC (Business Email Compromise) attacks mein attackers CEO banke finance team ko wire transfer ke liye convince karte hain. India mein BEC attacks se ₹200+ crore annually chori hoti hai.
+        </div>
+        <div class="g2">
+          <div class="card" style="padding:16px;">
+            <div class="card-title">BEC — Business Email Compromise</div>
+            <div class="card-text">Attacker compromises or spoofs a CEO/CFO email. Finance team ko urgent wire transfer request bhejta hai. $43 billion lost globally (FBI 2021). India's ICICI, HDFC customers targeted regularly.</div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <div class="card-title">Spear Phishing</div>
+            <div class="card-text">Highly personalized phishing. Attacker researches target on LinkedIn/social media. Email contains real colleague names, real project references — 3× more likely to succeed than generic phishing.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">👤</span>
+        <span class="vh-title">3. Insider Threats</span>
+        <span class="sev sev-c">CRITICAL (often underestimated)</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose">An insider threat originates from current or former employees, contractors, or business partners who misuse their authorized access to harm the organization. Insider threats are particularly dangerous because insiders already have legitimate access — bypassing perimeter defenses.</p>
+        <div class="g3">
+          <div class="card" style="padding:16px;">
+            <div class="card-title">Malicious Insider</div>
+            <div class="card-text">Deliberately steals data, sabotages systems — usually financially motivated or revenge-driven. Edward Snowden (NSA leaks) is a famous example.</div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <div class="card-title">Negligent Insider</div>
+            <div class="card-text">No malicious intent but causes breaches through carelessness — clicking phishing links, misconfiguring servers, losing devices. Most insider incidents are in this category.</div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <div class="card-title">Compromised Insider</div>
+            <div class="card-text">Legitimate employee's credentials stolen by external attacker. The external actor then operates as a trusted insider — hardest category to detect.</div>
+          </div>
+        </div>
+        <div class="hinglish">
+          <div class="hl-label">Detection Strategy</div>
+          UBA (User Behaviour Analytics) — jo humne Module 4 mein padha — insider threats detect karne ke liye use hota hai. <strong>Unusual data access patterns, off-hours logins, large downloads</strong> — ye sab insider threat indicators hain. Prevention mein: least privilege, monitoring, exit procedures (immediate account revocation when employee leaves).
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🏛️</span>
+        <span class="vh-title">4. Advanced Persistent Threats (APT)</span>
+        <span class="sev sev-c">CRITICAL — Nation-State Level</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <p class="prose">An <strong>APT</strong> is a sophisticated, long-term cyber intrusion by a well-funded threat actor (typically nation-states or highly organised criminal groups) who gains persistent access to a target network for espionage or sabotage. APTs are characterized by their stealth, patience, and specificity.</p>
+        <div class="g2">
+          <div>
+            <p class="prose"><strong>APT Attack Lifecycle:</strong></p>
+            <div class="impact-flow">
+              <div class="if-step" style="padding:8px 0;"><div class="if-num" style="background:rgba(30,87,153,0.1);color:var(--threat);min-width:24px;height:24px;font-size:11px;">1</div><div class="if-content"><div class="if-title" style="font-size:13px;">Reconnaissance</div><div class="if-desc" style="font-size:12px;">OSINT gathering on target org, employees, systems</div></div></div>
+              <div class="if-step" style="padding:8px 0;"><div class="if-num" style="background:rgba(30,87,153,0.1);color:var(--threat);min-width:24px;height:24px;font-size:11px;">2</div><div class="if-content"><div class="if-title" style="font-size:13px;">Initial Compromise</div><div class="if-desc" style="font-size:12px;">Spear phishing, zero-day, supply chain compromise</div></div></div>
+              <div class="if-step" style="padding:8px 0;"><div class="if-num" style="background:rgba(30,87,153,0.1);color:var(--threat);min-width:24px;height:24px;font-size:11px;">3</div><div class="if-content"><div class="if-title" style="font-size:13px;">Establish Foothold</div><div class="if-desc" style="font-size:12px;">Install backdoors, RATs for persistent access</div></div></div>
+              <div class="if-step" style="padding:8px 0;"><div class="if-num" style="background:rgba(30,87,153,0.1);color:var(--threat);min-width:24px;height:24px;font-size:11px;">4</div><div class="if-content"><div class="if-title" style="font-size:13px;">Lateral Movement</div><div class="if-desc" style="font-size:12px;">Expand access across network, find valuable targets</div></div></div>
+              <div class="if-step" style="padding:8px 0;"><div class="if-num" style="background:rgba(30,87,153,0.1);color:var(--threat);min-width:24px;height:24px;font-size:11px;">5</div><div class="if-content"><div class="if-title" style="font-size:13px;">Data Exfiltration / Objective</div><div class="if-desc" style="font-size:12px;">Steal IP, spy, or cause sabotage over months/years</div></div></div>
+            </div>
+          </div>
+          <div>
+            <p class="prose"><strong>Famous APT Groups:</strong></p>
+            <table class="risk-table" style="margin:0;">
+              <thead><tr><th>Group</th><th>Attribution</th><th>Known For</th></tr></thead>
+              <tbody>
+                <tr><td>APT28 / Fancy Bear</td><td>Russia (GRU)</td><td>DNC hack (2016), election interference</td></tr>
+                <tr><td>APT29 / Cozy Bear</td><td>Russia (SVR)</td><td>SolarWinds, COVID vaccine research theft</td></tr>
+                <tr><td>Lazarus Group</td><td>North Korea</td><td>Bangladesh Bank heist ($81M), WannaCry</td></tr>
+                <tr><td>APT41</td><td>China</td><td>Intellectual property, espionage</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-block">
+      <div class="vuln-block-header" onclick="toggleVuln(this)">
+        <span class="vh-icon">🌩</span>
+        <span class="vh-title">5. Other Major Threat Categories</span>
+        <span class="sev sev-h">HIGH</span>
+        <span class="vh-arrow">▶</span>
+      </div>
+      <div class="vuln-block-body">
+        <div class="g2">
+          <div class="card" style="padding:16px;">
+            <div class="card-icon">🌊</div>
+            <div class="card-title">DDoS Attacks</div>
+            <div class="card-text">Massive traffic floods targeting Availability. Amplification attacks (DNS, NTP, memcached) can achieve 100× traffic multiplication. Mirai botnet — 1.1 Tbps from IoT devices. Defense: CDN, rate limiting, scrubbing centers.</div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <div class="card-icon">💰</div>
+            <div class="card-title">Ransomware as a Service (RaaS)</div>
+            <div class="card-text">Criminal business model — ransomware operators license their malware to affiliates. DarkSide, REvil, Conti — organized criminal enterprises with help desks, SLAs, negotiation teams. $20 billion+ in ransomware payments in 2022.</div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <div class="card-icon">🕵️</div>
+            <div class="card-title">Cryptojacking</div>
+            <div class="card-text">Silently mining cryptocurrency on victim's hardware. No visible symptoms except slower performance and higher electricity bills. Often delivered via browser scripts or malware.</div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <div class="card-icon">📦</div>
+            <div class="card-title">Supply Chain Attacks</div>
+            <div class="card-text">Compromising a trusted software/hardware supplier to reach their customers. SolarWinds — 18,000 victims. Codecov — CI/CD pipeline poisoning. "Trusted" software becomes the attack vector.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     TOPIC 8 — IMPACT
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="t8" class="topic fi">
+  <div class="topic-header" style="background:rgba(45,106,45,0.05);border-color:rgba(45,106,45,0.2);">
+    <div class="topic-icon">💥</div>
+    <div class="topic-meta">
+      <div class="topic-tag" style="color:var(--impact)">Topic 08</div>
+      <div class="topic-title" style="color:var(--impact)">Impact of Vulnerabilities on Organizations</div>
+    </div>
+    <div class="topic-num" style="color:var(--impact)">08</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(45,106,45,0.15);">
+
+    <div class="defbox" style="border-left-color:var(--impact);">
+      <div class="dlabel" style="color:var(--impact)">Definition</div>
+      <div class="dtext">The <strong>impact of cyber vulnerabilities and threats</strong> on organizations encompasses the full range of consequences — from immediate operational disruption and financial loss to long-term reputational damage, legal liability, regulatory penalties, and existential threats to the business.</div>
+    </div>
+
+    <div class="hinglish">
+      <div class="hl-label">Hinglish Explanation</div>
+      Ek cyberattack ka nuksan sirf "data chori hona" nahi hota. Sochte hain kya kya ho sakta hai: <strong>Financial loss</strong> (ransom dena, fraud, recovery costs), <strong>Reputation damage</strong> (customers ka trust khatam), <strong>Legal consequences</strong> (GDPR fine, lawsuit), <strong>Operational disruption</strong> (business band), aur worst case — <strong>company ka diwala</strong>. Research kehti hai ki 60% small businesses ek major cyberattack ke baad 6 mahine mein band ho jaate hain.
+    </div>
+
+    <div class="sh">1. Financial Impact</div>
+
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" style="color:var(--impact)">$4.45M</div><div class="stat-label">Avg Data Breach Cost (IBM 2023)</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--aware)">$8T</div><div class="stat-label">Global Cybercrime Cost 2023</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--auth)">$20B+</div><div class="stat-label">Ransomware Payments 2022</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--soft)">287 days</div><div class="stat-label">Avg Time to Identify+Contain Breach</div></div>
+    </div>
+
+    <p class="prose"><strong>Direct Costs:</strong> Ransom payments, forensic investigation, system restoration, legal fees, regulatory fines (GDPR up to 4% of annual global revenue), notification costs for affected customers, credit monitoring services for victims.</p>
+    <p class="prose"><strong>Indirect Costs:</strong> Lost business during downtime, increased insurance premiums, higher cost of future capital, loss of competitive bids (due to security posture doubts), productivity loss during incident response.</p>
+
+    <div class="realcase" style="border-top-color:var(--impact);">
+      <div class="rc-label">Financial Impact Case Study</div>
+      <div class="rc-title">Equifax Data Breach (2017) — $1.4 Billion Total Cost</div>
+      <div class="rc-text">Unpatched Apache Struts vulnerability (CVE-2017-5638) exposed <strong>147 million Americans'</strong> Social Security numbers, birth dates, and financial data. Total cost: $1.4 billion including settlement, security upgrades, legal fees. CEO, CIO, and CSO resigned. Stock fell 35% in weeks. The vulnerability had a patch available for <strong>2 months</strong> before the breach — it simply was not applied in time.</div>
+    </div>
+
+    <div class="sh">2. Reputational Impact</div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-icon">📉</div>
+        <div class="card-title">Loss of Customer Trust</div>
+        <div class="card-text">Post-breach surveys: 65% of customers lose trust in a breached company (Centrify). 31% stop doing business entirely. Trust, once lost, takes years to rebuild — if it ever returns.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗞</div>
+        <div class="card-title">Media & Public Scrutiny</div>
+        <div class="card-text">Major breaches become front-page news. Negative coverage lasts months. Social media amplification means the story reaches millions within hours. Brand equity takes years to build and days to destroy.</div>
+      </div>
+    </div>
+
+    <div class="sh">3. Legal & Regulatory Impact</div>
+    <table class="risk-table">
+      <thead><tr><th>Regulation</th><th>Jurisdiction</th><th>Max Penalty</th><th>Notable Fine</th></tr></thead>
+      <tbody>
+        <tr><td><strong>GDPR</strong></td><td>European Union</td><td>€20M or 4% global revenue</td><td>Meta: €1.2B (2023), Amazon: €746M</td></tr>
+        <tr><td><strong>IT Act 2000</strong></td><td>India</td><td>Up to ₹5 crore + imprisonment</td><td>Increasing enforcement since 2020</td></tr>
+        <tr><td><strong>DPDP Act 2023</strong></td><td>India</td><td>Up to ₹250 crore</td><td>New — India's GDPR equivalent</td></tr>
+        <tr><td><strong>HIPAA</strong></td><td>USA</td><td>$1.9M per violation category</td><td>Anthem Insurance: $16M (2018)</td></tr>
+        <tr><td><strong>PCI-DSS</strong></td><td>Global (card industry)</td><td>$5,000–$100,000/month</td><td>Plus loss of card processing rights</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sh">4. Operational Impact</div>
+    <div class="impact-flow">
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(45,106,45,0.1);color:var(--impact);">⚡</div>
+        <div class="if-content">
+          <div class="if-title">Business Downtime</div>
+          <div class="if-desc">Ransomware can halt operations entirely. Average downtime from ransomware: 24 days (Coveware 2023). For a hospital — this means patient diversions, cancelled surgeries, delayed test results. For manufacturing — production lines stop, contracts breached, supply chains disrupted.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(45,106,45,0.1);color:var(--impact);">⚡</div>
+        <div class="if-content">
+          <div class="if-title">Data Loss / Corruption</div>
+          <div class="if-desc">Irrecoverable loss of critical business data — customer records, financial data, intellectual property. If backups are also compromised (ransomware increasingly targets backups first), complete data loss becomes possible.</div>
+        </div>
+      </div>
+      <div class="if-step">
+        <div class="if-num" style="background:rgba(45,106,45,0.1);color:var(--impact);">⚡</div>
+        <div class="if-content">
+          <div class="if-title">Supply Chain Disruption</div>
+          <div class="if-desc">When a key supplier or logistics provider is attacked, the entire dependent ecosystem is disrupted. Maersk (shipping giant) — NotPetya attack caused $300M loss and required reinstalling 45,000 PCs and 4,000 servers.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh">5. National Security & Critical Infrastructure Impact</div>
+    <p class="prose">Modern cyber threats extend beyond individual organizations to national security. Critical infrastructure — power grids, water treatment, financial systems, hospitals, transportation networks — are all potential targets.</p>
+    <div class="g2">
+      <div class="realcase" style="border-top-color:var(--impact);margin-top:0;">
+        <div class="rc-label">Case — Ukraine Power Grid (2015)</div>
+        <div class="rc-title">First Known Cyberattack on Power Grid</div>
+        <div class="rc-text">Russian Sandworm APT group used spear phishing → BlackEnergy malware → compromised SCADA systems → manually cut power to 230,000 homes in western Ukraine in December (winter). 6 hours of blackout. Demonstrated that cyber attacks can cause real-world physical harm.</div>
+      </div>
+      <div class="realcase" style="border-top-color:var(--soft);margin-top:0;">
+        <div class="rc-label">Case — Oldsmar Water Treatment (2021)</div>
+        <div class="rc-title">Poisoning Attempt via Cyberattack</div>
+        <div class="rc-text">Attacker remotely accessed the water treatment facility's SCADA system in Florida. Attempted to increase sodium hydroxide (lye) to 111× safe levels — which would have poisoned the water supply. An alert operator noticed the mouse moving and reversed the change in time.</div>
+      </div>
+    </div>
+
+    <div class="sh">Risk Mitigation Framework — Putting It All Together</div>
+    <table class="risk-table">
+      <thead><tr><th>Vulnerability Category</th><th>Primary Risk</th><th>Key Mitigation</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td>Software vulnerabilities</td><td>Data breach, RCE</td><td>Patch management, SAST/DAST, secure coding</td><td><span class="sev sev-c">CRITICAL</span></td></tr>
+        <tr><td>Complex networks</td><td>Lateral movement, APT</td><td>Segmentation, Zero Trust, network monitoring</td><td><span class="sev sev-c">CRITICAL</span></td></tr>
+        <tr><td>Open data access</td><td>Data exfiltration, insider threat</td><td>Least privilege, RBAC, DLP, encryption</td><td><span class="sev sev-h">HIGH</span></td></tr>
+        <tr><td>Weak authentication</td><td>Credential theft, account takeover</td><td>MFA, password manager, FIDO2</td><td><span class="sev sev-c">CRITICAL</span></td></tr>
+        <tr><td>Poor awareness</td><td>Phishing, social engineering</td><td>Training, phishing simulation, clear policies</td><td><span class="sev sev-h">HIGH</span></td></tr>
+        <tr><td>Malware threats</td><td>Data loss, downtime, ransom</td><td>EDR, backups, email filtering, network sandboxing</td><td><span class="sev sev-c">CRITICAL</span></td></tr>
+        <tr><td>Insider threats</td><td>IP theft, sabotage</td><td>UBA, least privilege, exit procedures, monitoring</td><td><span class="sev sev-h">HIGH</span></td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────
+     QUIZ
+────────────────────────────────────────────── -->
+<div class="sec-break"></div>
+<div id="quiz" class="quiz-wrap fi">
+  <h2>Chapter Review Quiz</h2>
+  <div class="quiz-sub">// Unit 2 · Module 1 — 10 questions covering all 8 topics //</div>
+
+  <div class="qcard"><div class="qtxt">1. What is the difference between a vulnerability and a threat?</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,0,0)">A) They are the same thing</button>
+    <button class="qbtn" onclick="qa(this,0,1)">B) Vulnerability is a weakness in the system; a threat is a potential actor or event that could exploit it ✓</button>
+    <button class="qbtn" onclick="qa(this,0,2)">C) A threat is a weakness; a vulnerability is an attacker</button>
+  </div><div class="qfb" id="f0"></div></div>
+
+  <div class="qcard"><div class="qtxt">2. A hacker finds a critical flaw in Windows that Microsoft doesn't know about yet. What is this called?</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,1,0)">A) Legacy vulnerability</button>
+    <button class="qbtn" onclick="qa(this,1,1)">B) Known CVE</button>
+    <button class="qbtn" onclick="qa(this,1,2)">C) Zero-Day vulnerability ✓</button>
+  </div><div class="qfb" id="f1"></div></div>
+
+  <div class="qcard"><div class="qtxt">3. A developer writes code with no bounds checking on a character array. An attacker sends a 500-byte string to a 64-byte buffer. What type of attack is possible?</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,2,0)">A) Buffer Overflow ✓</button>
+    <button class="qbtn" onclick="qa(this,2,1)">B) SQL Injection</button>
+    <button class="qbtn" onclick="qa(this,2,2)">C) Path Traversal</button>
+  </div><div class="qfb" id="f2"></div></div>
+
+  <div class="qcard"><div class="qtxt">4. SolarWinds attack compromised 18,000 organizations via a software update. Which vulnerability category does this primarily illustrate?</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,3,0)">A) Weak authentication</button>
+    <button class="qbtn" onclick="qa(this,3,1)">B) Complex network architectures and supply chain risk ✓</button>
+    <button class="qbtn" onclick="qa(this,3,2)">C) Poor security awareness</button>
+  </div><div class="qfb" id="f3"></div></div>
+
+  <div class="qcard"><div class="qtxt">5. The "Principle of Least Privilege" means:</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,4,0)">A) Give all users admin access so they can work efficiently</button>
+    <button class="qbtn" onclick="qa(this,4,1)">B) Users and systems should have only the minimum access required for their legitimate function ✓</button>
+    <button class="qbtn" onclick="qa(this,4,2)">C) Privileged accounts should use the least complex passwords</button>
+  </div><div class="qfb" id="f4"></div></div>
+
+  <div class="qcard"><div class="qtxt">6. Which MFA method is most resistant to phishing and man-in-the-middle attacks?</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,5,0)">A) SMS OTP</button>
+    <button class="qbtn" onclick="qa(this,5,1)">B) Email OTP</button>
+    <button class="qbtn" onclick="qa(this,5,2)">C) FIDO2 hardware security key (passkey) ✓</button>
+  </div><div class="qfb" id="f5"></div></div>
+
+  <div class="qcard"><div class="qtxt">7. An attacker calls an employee pretending to be from the IT helpdesk and asks for their password to "fix an urgent issue." This is an example of:</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,6,0)">A) SQL Injection</button>
+    <button class="qbtn" onclick="qa(this,6,1)">B) Vishing / Pretexting (Social Engineering) ✓</button>
+    <button class="qbtn" onclick="qa(this,6,2)">C) Buffer Overflow</button>
+  </div><div class="qfb" id="f6"></div></div>
+
+  <div class="qcard"><div class="qtxt">8. The Equifax breach (2017) exposed 147 million records. The root cause was:</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,7,0)">A) An unpatched Apache Struts vulnerability that had a fix available 2 months prior ✓</button>
+    <button class="qbtn" onclick="qa(this,7,1)">B) An employee clicked a phishing email</button>
+    <button class="qbtn" onclick="qa(this,7,2)">C) A zero-day with no available patch</button>
+  </div><div class="qfb" id="f7"></div></div>
+
+  <div class="qcard"><div class="qtxt">9. A ransomware attack encrypts all of a hospital's patient records. The hospital pays the ransom but is also fined under HIPAA. This illustrates which types of impact?</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,8,0)">A) Only financial impact</button>
+    <button class="qbtn" onclick="qa(this,8,1)">B) Financial + Legal + Operational impact ✓</button>
+    <button class="qbtn" onclick="qa(this,8,2)">C) Only reputational impact</button>
+  </div><div class="qfb" id="f8"></div></div>
+
+  <div class="qcard"><div class="qtxt">10. "Credential stuffing" attacks are effective primarily because:</div><div class="qopts">
+    <button class="qbtn" onclick="qa(this,9,0)">A) They use zero-day exploits to bypass authentication</button>
+    <button class="qbtn" onclick="qa(this,9,1)">B) They exploit weak server-side encryption</button>
+    <button class="qbtn" onclick="qa(this,9,2)">C) Users reuse the same passwords across multiple sites — breached credentials from one site work on others ✓</button>
+  </div><div class="qfb" id="f9"></div></div>
+
+</div>
+
+</div><!-- /wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="ftr-cr">
+    <span class="ftr-label">© Copyright 2025 — All Rights Reserved</span>
+    <span class="ftr-name">Bhanu Pratap Singh Rajpurohit</span>
+    <span class="ftr-sub">Unit 2 · Module 1 · Cyber Security Vulnerabilities & Threats</span>
+  </div>
+  <div style="font-family:var(--font-m);font-size:10.5px;color:rgba(255,255,255,0.2);letter-spacing:1px;margin-top:8px;">
+    Unit 1: Fundamentals &nbsp;·&nbsp; Unit 2 M1: Vulnerabilities & Threats &nbsp;·&nbsp; Unit 2 M2: Coming Next
+  </div>
+</footer>
+
+<script>
+/* ACCORDION */
+function toggleVuln(header) {
+  const body = header.nextElementSibling;
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+/* Open first of each block by default */
+document.querySelectorAll('.vuln-block').forEach((block, i) => {
+  if (i === 0) {
+    block.querySelector('.vuln-block-header').classList.add('open');
+    block.querySelector('.vuln-block-body').classList.add('open');
+  }
+});
+
+/* QUIZ */
+const ANS = [1, 2, 0, 1, 1, 2, 1, 0, 1, 2];
+const FB  = [
+  {ok:"Correct! Vulnerability = weakness in system. Threat = actor/event that could exploit it. Risk = likelihood × impact.", bad:"Incorrect. Vulnerability is the flaw (e.g. unpatched software). Threat is what could exploit it (e.g. a hacker, malware)."},
+  {ok:"Exactly right! Zero-day = unknown to vendor, no patch available. Extremely valuable in exploit markets ($100K–$2.5M).", bad:"Incorrect. When the vendor is unaware and no patch exists — that's a Zero-Day vulnerability."},
+  {ok:"Buffer overflow! Writing past the bounds of a 64-byte buffer into adjacent memory. Classic RCE vector — strcpy without length checks.", bad:"Incorrect. Writing beyond a fixed-size buffer's boundary = Buffer Overflow. The attacker can inject shellcode in the overflow space."},
+  {ok:"Supply chain complexity! SolarWinds shows that trusted vendor software can become the attack vector — a consequence of complex, trusted network interconnections.", bad:"Incorrect. SolarWinds was a supply chain attack — attackers compromised the software update pipeline of a trusted network management vendor."},
+  {ok:"Correct! Least Privilege = minimum necessary access only. This limits the blast radius if any account or component is compromised.", bad:"Incorrect. Least Privilege means MINIMUM access required — not maximum, not all-admin."},
+  {ok:"FIDO2/Passkeys are phishing-proof because the cryptographic key is hardware-bound and the authentication challenge is domain-specific — cannot be replayed on a fake site.", bad:"SMS OTP is vulnerable to SIM swapping. Authenticator apps can be AiTM'd. FIDO2 hardware keys are the gold standard for phishing resistance."},
+  {ok:"Vishing (voice phishing) + Pretexting (fake scenario). Classic social engineering — exploiting helpfulness and authority compliance.", bad:"This is social engineering — specifically Vishing (phone call) using a Pretexting technique (fake IT helpdesk scenario). No technical exploit involved."},
+  {ok:"The patch for CVE-2017-5638 was available 2 months before the breach. Equifax failed to apply it in time. This is the most common failure mode — unpatched known vulnerabilities.", bad:"Incorrect. Equifax's root cause was a known, patchable vulnerability (Apache Struts CVE-2017-5638) left unpatched for 2 months."},
+  {ok:"Multi-dimensional impact: Financial (ransom + recovery + fine), Legal (HIPAA regulatory penalty), and Operational (downtime, inaccessible patient records, disrupted care).", bad:"A ransomware attack on a hospital illustrates at minimum 3 impact types: Financial (costs), Legal (HIPAA fines), and Operational (system downtime)."},
+  {ok:"Correct! 65% of users reuse passwords (Google survey). Breach database from Site A + automation tool = attacks on Site B, C, D. Solution: unique passwords via password manager.", bad:"Credential stuffing uses already-known credentials from OTHER breaches — it exploits password reuse across sites, not technical vulnerabilities."}
+];
+function qa(btn, qi, oi) {
+  const opts = btn.parentElement.querySelectorAll('.qbtn');
+  opts.forEach(o => o.disabled = true);
+  const ok = oi === ANS[qi];
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) opts[ANS[qi]].classList.add('correct');
+  const fb = document.getElementById('f' + qi);
+  fb.className = 'qfb show ' + (ok ? 'ok' : 'bad');
+  fb.textContent = ok ? FB[qi].ok : FB[qi].bad;
+}
+
+/* FADE IN */
+const obs = new IntersectionObserver(e => {
+  e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+/* SMOOTH NAV */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

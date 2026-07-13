@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 · Module 2 — Cyber Security Safeguards & Protection Mechanisms</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #f5f0e8;
+  --bg2:     #ede7db;
+  --bg3:     #e4dccd;
+  --surface: #fdfaf5;
+  --border:  #d8cfc2;
+  --border2: #c4b9a8;
+  --text:    #171310;
+  --body:    #362d24;
+  --muted:   #867260;
+  --faint:   #b3a08e;
+
+  /* topic colours */
+  --ov:   #1b5e8a;   /* overview – steel */
+  --ac:   #6b2d0f;   /* access ctrl – brick */
+  --at:   #1a6b45;   /* auth – forest */
+  --bio:  #6b3a9e;   /* biometric – plum */
+  --al:   #8b5e08;   /* audit – amber */
+  --dec:  #1e5c6e;   /* deception – teal */
+  --dos:  #8b1a1a;   /* DoS – red */
+  --eth:  #2d5a1b;   /* ethical – green */
+  --fw:   #1a3d6b;   /* firewall – navy */
+  --vs:   #7a3f00;   /* vuln scan – brown */
+  --sp:   #4a1a6b;   /* policy – violet */
+  --tm:   #1a5c3a;   /* threat mgmt – emerald */
+  --mal:  #8b0000;   /* malware – dark red */
+  --pm:   #005f5f;   /* patch – dark cyan */
+
+  --font-d: 'Cormorant Garamond', serif;
+  --font-b: 'DM Sans', sans-serif;
+  --font-m: 'JetBrains Mono', monospace;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-b);
+  font-size:15.5px;
+  line-height:1.82;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.022'/%3E%3C/svg%3E");
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:52px;display:flex;align-items:center;
+  padding:0 26px;gap:6px;
+  background:rgba(245,240,232,0.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand{font-family:var(--font-d);font-size:15px;font-weight:700;font-style:italic;color:var(--text);margin-right:8px;white-space:nowrap;}
+.nav-links{display:flex;gap:3px;flex-wrap:wrap;overflow:hidden;}
+.nav-links a{font-family:var(--font-m);font-size:10px;color:var(--muted);text-decoration:none;padding:4px 8px;border-radius:3px;letter-spacing:0.3px;transition:all .15s;white-space:nowrap;}
+.nav-links a:hover{color:var(--text);background:var(--bg2);}
+
+/* HERO */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:100px 24px 80px;
+  background:linear-gradient(150deg,#fdf9f3 0%,#f0e9db 50%,#e5dace 100%);
+  border-bottom:1px solid var(--border);overflow:hidden;
+}
+.hero-rings{position:absolute;inset:0;pointer-events:none;}
+.ring{
+  position:absolute;border-radius:50%;border:1px solid;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.r1{width:400px;height:400px;border-color:rgba(27,94,138,0.07);}
+.r2{width:650px;height:650px;border-color:rgba(27,94,138,0.04);}
+.r3{width:900px;height:900px;border-color:rgba(27,94,138,0.025);}
+.hex{position:absolute;width:120px;height:120px;border:1px solid rgba(107,45,15,0.07);transform:rotate(30deg);top:8%;right:10%;}
+.hex2{position:absolute;width:80px;height:80px;border:1px solid rgba(74,26,107,0.06);transform:rotate(15deg);bottom:12%;left:7%;}
+
+.hero-eyebrow{font-family:var(--font-m);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border:1px solid var(--border2);background:var(--surface);padding:6px 20px;border-radius:2px;margin-bottom:30px;position:relative;z-index:1;animation:fu .7s ease both;}
+.hero h1{font-family:var(--font-d);font-size:clamp(40px,8vw,94px);font-weight:700;line-height:.9;position:relative;z-index:1;animation:fu .85s ease .1s both;margin-bottom:6px;}
+.hero h1 .t1{display:block;color:var(--text);}
+.hero h1 .t2{display:block;color:var(--ov);font-style:italic;}
+.hero h1 .t3{display:block;font-family:var(--font-m);font-size:.22em;font-weight:400;letter-spacing:4px;color:var(--faint);font-style:normal;margin-top:16px;}
+.hero-sub{font-size:17px;color:var(--muted);max-width:600px;margin:26px auto 42px;position:relative;z-index:1;animation:fu 1s ease .2s both;}
+.hero-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:760px;position:relative;z-index:1;animation:fu 1s ease .3s both;}
+.hg-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:5px;font-family:var(--font-m);font-size:10px;text-decoration:none;border:1px solid;transition:all .2s;letter-spacing:.3px;}
+.hg-pill:hover{transform:translateY(-2px);}
+.hg-pill .pn{font-weight:600;opacity:.5;}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* WRAP */
+.wrap{max-width:1060px;margin:0 auto;padding:0 26px;position:relative;z-index:1;}
+
+/* TOPIC */
+.topic{margin-bottom:64px;scroll-margin-top:64px;}
+.topic-header{display:flex;align-items:flex-start;gap:18px;padding:26px 30px;border-radius:10px 10px 0 0;border:1px solid;border-bottom:none;position:relative;overflow:hidden;}
+.topic-header::after{content:'';position:absolute;top:0;right:0;width:180px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05));pointer-events:none;}
+.topic-bg-num{position:absolute;right:18px;bottom:-8px;font-family:var(--font-d);font-size:60px;font-weight:700;opacity:.08;line-height:1;}
+.t-icon{font-size:28px;margin-top:3px;flex-shrink:0;}
+.t-meta .t-tag{font-family:var(--font-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.55;margin-bottom:5px;}
+.t-meta .t-title{font-family:var(--font-d);font-size:clamp(20px,3.5vw,30px);font-weight:700;line-height:1.05;}
+.topic-body{background:var(--surface);border:1px solid;border-top:none;border-radius:0 0 10px 10px;padding:30px;}
+
+/* DEFINITION */
+.defbox{border-left:3px solid;background:var(--bg2);border-radius:0 8px 8px 0;padding:16px 20px;margin-bottom:20px;}
+.defbox .dl{font-family:var(--font-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;opacity:.5;}
+.defbox .dt{font-size:15px;color:var(--body);line-height:1.85;}
+.defbox .dt strong{font-weight:600;color:var(--text);}
+
+/* HINGLISH */
+.hin{background:linear-gradient(135deg,rgba(27,94,138,.04),rgba(107,45,15,.03));border:1px solid var(--border2);border-left:3px solid var(--ac);border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0;font-size:14.5px;color:var(--body);line-height:1.82;}
+.hin .hl{font-family:var(--font-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;opacity:.55;}
+.hin strong{color:var(--text);font-weight:600;}
+
+/* PROSE */
+.p{font-size:15px;color:var(--body);line-height:1.85;margin-bottom:12px;}
+.p:last-child{margin-bottom:0;}
+.p strong{font-weight:600;color:var(--text);}
+.p em{font-style:italic;color:var(--text);}
+
+/* HEADING */
+.sh{font-family:var(--font-d);font-size:20px;font-weight:700;margin:22px 0 11px;color:var(--text);}
+.sh2{font-family:var(--font-b);font-size:13px;font-weight:700;letter-spacing:.5px;margin:14px 0 7px;color:var(--text);text-transform:uppercase;}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0;}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr;}}
+@media(min-width:701px) and (max-width:850px){.g3{grid-template-columns:1fr 1fr;}}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:18px;transition:transform .2s;}
+.card:hover{transform:translateY(-2px);}
+.card .ci{font-size:22px;margin-bottom:9px;}
+.card .ct{font-family:var(--font-d);font-size:16px;font-weight:700;margin-bottom:6px;}
+.card .cx{font-size:13.5px;color:var(--muted);line-height:1.72;}
+
+/* ACCORDION */
+.acc{background:var(--bg2);border:1px solid var(--border);border-radius:9px;margin-bottom:14px;overflow:hidden;}
+.acc-h{display:flex;align-items:center;gap:10px;padding:14px 20px;cursor:pointer;user-select:none;transition:background .15s;}
+.acc-h:hover{background:var(--bg3);}
+.acc-h.open{background:var(--bg3);}
+.acc-h .ai{font-size:18px;}
+.acc-h .at{font-family:var(--font-d);font-size:16px;font-weight:700;flex:1;}
+.acc-h .aa{font-size:11px;color:var(--muted);transition:transform .2s;}
+.acc-h.open .aa{transform:rotate(90deg);}
+.acc-body{display:none;padding:18px 20px;border-top:1px solid var(--border);}
+.acc-body.open{display:block;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+.tbl th{background:var(--bg3);padding:10px 13px;text-align:left;font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);}
+.tbl td{padding:10px 13px;border:1px solid var(--border);color:var(--body);vertical-align:top;}
+.tbl tr:hover td{background:rgba(0,0,0,.012);}
+
+/* BADGE */
+.b{display:inline-block;font-family:var(--font-m);font-size:10px;padding:2px 8px;border-radius:2px;border:1px solid;letter-spacing:.5px;}
+.bc{color:#8b1a1a;border-color:rgba(139,26,26,.4);background:rgba(139,26,26,.07);}
+.bh{color:#8b5e08;border-color:rgba(139,94,8,.4);background:rgba(139,94,8,.07);}
+.bm{color:#1b5e8a;border-color:rgba(27,94,138,.4);background:rgba(27,94,138,.07);}
+.bl{color:#1a6b45;border-color:rgba(26,107,69,.4);background:rgba(26,107,69,.07);}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0;margin:14px 0;}
+.fs{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.05);}
+.fs:last-child{border-bottom:none;}
+.fn{font-family:var(--font-d);font-size:12px;font-weight:700;min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.fc{flex:1;}
+.ft{font-weight:700;font-size:14.5px;margin-bottom:2px;}
+.fd{font-size:13.5px;color:var(--muted);line-height:1.68;}
+
+/* CODE */
+.code{background:#1a1610;border-radius:8px;padding:16px 18px;margin:12px 0;overflow-x:auto;}
+.code pre{font-family:var(--font-m);font-size:12.5px;line-height:1.7;color:#c4b89c;}
+.ck{color:#e8846a;}.cs{color:#7ec99a;}.cn{color:#79b3d4;}.cmt{color:#6a7856;font-style:italic;}.ch{color:#e8c97a;}
+
+/* TAGROW */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+.tag{font-family:var(--font-m);font-size:11px;padding:3px 10px;border-radius:3px;border:1px solid rgba(0,0,0,.1);color:var(--muted);}
+.tr{color:#8b1a1a;border-color:rgba(139,26,26,.28);background:rgba(139,26,26,.05);}
+.tb{color:#1b5e8a;border-color:rgba(27,94,138,.28);background:rgba(27,94,138,.05);}
+.tg{color:#1a6b45;border-color:rgba(26,107,69,.28);background:rgba(26,107,69,.05);}
+.ta{color:#8b5e08;border-color:rgba(139,94,8,.28);background:rgba(139,94,8,.05);}
+.tp{color:#4a1a6b;border-color:rgba(74,26,107,.28);background:rgba(74,26,107,.05);}
+
+/* REAL CASE */
+.rc{background:var(--surface);border:1px solid var(--border);border-top:3px solid;border-radius:0 0 9px 9px;padding:18px 22px;margin-top:14px;}
+.rc .rl{font-family:var(--font-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;opacity:.45;}
+.rc .rh{font-weight:700;font-size:15px;margin-bottom:5px;}
+.rc .rb{font-size:13.5px;color:var(--muted);line-height:1.72;}
+
+/* STATS */
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;}
+.sb{flex:1;min-width:130px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 18px;text-align:center;}
+.sn{font-family:var(--font-d);font-size:30px;font-weight:700;line-height:1;margin-bottom:4px;}
+.sl{font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+/* SECTION BREAK */
+.brk{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:52px 0;}
+
+/* QUIZ */
+.quiz{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:60px;}
+.quiz h2{font-family:var(--font-d);font-size:32px;font-weight:700;margin-bottom:5px;}
+.quiz .qs{font-family:var(--font-m);font-size:12px;color:var(--muted);margin-bottom:26px;letter-spacing:.5px;}
+.qc{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:12px;}
+.qt{font-weight:600;font-size:15px;margin-bottom:12px;color:var(--text);}
+.qos{display:flex;flex-direction:column;gap:6px;}
+.qb{padding:9px 14px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:14px;font-family:var(--font-b);background:transparent;color:var(--text);text-align:left;transition:all .15s;}
+.qb:hover{border-color:var(--border2);background:var(--bg3);}
+.qb.correct{border-color:#27ae60;background:rgba(39,174,96,.08);color:#1a6e3a;}
+.qb.wrong{border-color:#c0392b;background:rgba(192,57,43,.08);color:#a0291f;}
+.qfb{margin-top:8px;font-size:13.5px;padding:9px 14px;border-radius:6px;display:none;}
+.qfb.show{display:block;}
+.qfb.ok{background:rgba(39,174,96,.07);color:#1a6e3a;border:1px solid rgba(39,174,96,.2);}
+.qfb.bad{background:rgba(192,57,43,.07);color:#a0291f;border:1px solid rgba(192,57,43,.2);}
+
+/* FOOTER */
+footer{background:var(--text);color:rgba(255,255,255,.45);padding:42px 24px 30px;text-align:center;position:relative;z-index:1;}
+.fcr{display:inline-flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:16px 34px;margin-bottom:12px;}
+.fn2{font-family:var(--font-d);font-size:20px;color:#fff;font-style:italic;}
+.fl{font-family:var(--font-m);font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.28);}
+.fs2{font-family:var(--font-m);font-size:11px;color:rgba(255,255,255,.28);}
+
+/* FADE */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .62s ease,transform .62s ease;}
+.fi.vis{opacity:1;transform:translateY(0);}
+
+/* FIREWALL DIAGRAM */
+.fw-diagram{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:22px;margin:14px 0;text-align:center;}
+.fw-row{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:8px 0;}
+.fw-box{font-family:var(--font-m);font-size:12px;padding:10px 16px;border-radius:6px;border:1px solid;white-space:nowrap;}
+.fw-arrow{font-size:18px;color:var(--muted);margin:0 6px;}
+.fw-label{font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+
+@media(max-width:600px){.topic-header{padding:18px;}.topic-body{padding:18px;}.quiz{padding:20px 16px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">Unit 2 · M2</span>
+  <div class="nav-links">
+    <a href="#t1">Overview</a><a href="#t2">Access Control</a><a href="#t3">Auth</a>
+    <a href="#t4">Biometrics</a><a href="#t5">Audit</a><a href="#t6">Deception</a>
+    <a href="#t7">DoS Filters</a><a href="#t8">Ethical Hacking</a><a href="#t9">Firewalls</a>
+    <a href="#t10">Vuln Scanning</a><a href="#t11">Policies</a><a href="#t12">Threat Mgmt</a>
+    <a href="#t13">Anti-Malware</a><a href="#t14">Patch Mgmt</a><a href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-rings"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="hex"></div><div class="hex2"></div></div>
+  <div class="hero-eyebrow">Unit 2 · Module 2 · Bhanu Pratap Singh Rajpurohit</div>
+  <h1>
+    <span class="t1">Cyber Security</span>
+    <span class="t2">Safeguards &amp; Protection</span>
+    <span class="t3">14 Mechanisms · Deep Coverage · English + Hinglish</span>
+  </h1>
+  <p class="hero-sub">The complete toolkit of defences — from access control and firewalls to ethical hacking, patch management, and threat intelligence — explained in depth with real-world examples.</p>
+  <div class="hero-grid">
+    <a class="hg-pill" href="#t1" style="color:var(--ov);border-color:rgba(27,94,138,.3);background:rgba(27,94,138,.05);"><span class="pn">01</span>Overview</a>
+    <a class="hg-pill" href="#t2" style="color:var(--ac);border-color:rgba(107,45,15,.3);background:rgba(107,45,15,.05);"><span class="pn">02</span>Access Control</a>
+    <a class="hg-pill" href="#t3" style="color:var(--at);border-color:rgba(26,107,69,.3);background:rgba(26,107,69,.05);"><span class="pn">03</span>Authentication</a>
+    <a class="hg-pill" href="#t4" style="color:var(--bio);border-color:rgba(107,58,158,.3);background:rgba(107,58,158,.05);"><span class="pn">04</span>Biometrics</a>
+    <a class="hg-pill" href="#t5" style="color:var(--al);border-color:rgba(139,94,8,.3);background:rgba(139,94,8,.05);"><span class="pn">05</span>Audit &amp; Logging</a>
+    <a class="hg-pill" href="#t6" style="color:var(--dec);border-color:rgba(30,92,110,.3);background:rgba(30,92,110,.05);"><span class="pn">06</span>Deception</a>
+    <a class="hg-pill" href="#t7" style="color:var(--dos);border-color:rgba(139,26,26,.3);background:rgba(139,26,26,.05);"><span class="pn">07</span>DoS Filters</a>
+    <a class="hg-pill" href="#t8" style="color:var(--eth);border-color:rgba(45,90,27,.3);background:rgba(45,90,27,.05);"><span class="pn">08</span>Ethical Hacking</a>
+    <a class="hg-pill" href="#t9" style="color:var(--fw);border-color:rgba(26,61,107,.3);background:rgba(26,61,107,.05);"><span class="pn">09</span>Firewalls</a>
+    <a class="hg-pill" href="#t10" style="color:var(--vs);border-color:rgba(122,63,0,.3);background:rgba(122,63,0,.05);"><span class="pn">10</span>Vuln Scanning</a>
+    <a class="hg-pill" href="#t11" style="color:var(--sp);border-color:rgba(74,26,107,.3);background:rgba(74,26,107,.05);"><span class="pn">11</span>Security Policies</a>
+    <a class="hg-pill" href="#t12" style="color:var(--tm);border-color:rgba(26,92,58,.3);background:rgba(26,92,58,.05);"><span class="pn">12</span>Threat Mgmt</a>
+    <a class="hg-pill" href="#t13" style="color:var(--mal);border-color:rgba(139,0,0,.3);background:rgba(139,0,0,.05);"><span class="pn">13</span>Anti-Malware</a>
+    <a class="hg-pill" href="#t14" style="color:var(--pm);border-color:rgba(0,95,95,.3);background:rgba(0,95,95,.05);"><span class="pn">14</span>Patch Mgmt</a>
+  </div>
+</div>
+
+<div class="wrap">
+<div style="height:68px;"></div>
+
+<!-- ══════════════════════════════════
+     T1 — OVERVIEW
+══════════════════════════════════ -->
+<div id="t1" class="topic fi">
+  <div class="topic-header" style="background:rgba(27,94,138,.05);border-color:rgba(27,94,138,.2);">
+    <div class="t-icon">🛡️</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--ov)">Topic 01</div><div class="t-title" style="color:var(--ov)">Overview of Cyber Security Safeguards</div></div>
+    <div class="topic-bg-num">01</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(27,94,138,.15);">
+    <div class="defbox" style="border-left-color:var(--ov);">
+      <div class="dl" style="color:var(--ov)">Definition</div>
+      <div class="dt"><strong>Cyber Security Safeguards</strong> are the totality of technical controls, procedural measures, administrative policies, and physical mechanisms that an organisation deploys to protect its information assets from threats, reduce vulnerabilities, and ensure CIA — Confidentiality, Integrity, and Availability.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--ov);">
+      <div class="hl">Hinglish Explanation</div>
+      Module 1 mein humne sikha ki <strong>kya kya khatare hain aur vulnerabilities kahan hain</strong>. Ab Module 2 mein seekhenge ki <strong>un khataaron se kaise bachein</strong>. Jaise ghar ko secure karne ke liye tum lock lagate ho, CCTV lagate ho, alarm system lagate ho — same tarah digital world mein alag-alag safeguards lagate hain. Koi ek safeguard kaafi nahi hota — <strong>Defence-in-Depth</strong> chahiye.
+    </div>
+    <div class="sh">Defence-in-Depth Model</div>
+    <p class="p"><strong>Defence-in-Depth (DiD)</strong> is the principle of layering multiple independent security controls so that if one layer fails, others continue to provide protection. No single safeguard is a silver bullet — a determined attacker who defeats the firewall should still face authentication, then encryption, then monitoring, then audit logs.</p>
+    <div class="g3">
+      <div class="card"><div class="ci">🔧</div><div class="ct">Technical Controls</div><div class="cx">Firewalls, IDS/IPS, encryption, antivirus, access control lists, MFA, patch management — implemented in hardware or software.</div></div>
+      <div class="card"><div class="ci">📋</div><div class="ct">Administrative Controls</div><div class="cx">Security policies, procedures, awareness training, risk assessments, incident response plans — governing how people behave.</div></div>
+      <div class="card"><div class="ci">🏢</div><div class="ct">Physical Controls</div><div class="cx">Locked server rooms, badge access, CCTV, mantraps, biometric entry — preventing physical access to hardware and infrastructure.</div></div>
+    </div>
+    <div class="sh">The Security Control Triad</div>
+    <table class="tbl">
+      <thead><tr><th>Type</th><th>Purpose</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Preventive</strong></td><td>Stop the attack before it happens</td><td>Firewalls, MFA, encryption, access control, patch management</td></tr>
+        <tr><td><strong>Detective</strong></td><td>Identify an attack in progress or after the fact</td><td>IDS, SIEM, audit logs, vulnerability scanning, UBA</td></tr>
+        <tr><td><strong>Corrective</strong></td><td>Minimise damage and restore normal operations after an attack</td><td>Incident response, backups, patch application, forensics</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T2 — ACCESS CONTROL
+══════════════════════════════════ -->
+<div id="t2" class="topic fi">
+  <div class="topic-header" style="background:rgba(107,45,15,.05);border-color:rgba(107,45,15,.2);">
+    <div class="t-icon">🚪</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--ac)">Topic 02</div><div class="t-title" style="color:var(--ac)">Access Control</div></div>
+    <div class="topic-bg-num">02</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(107,45,15,.15);">
+    <div class="defbox" style="border-left-color:var(--ac);">
+      <div class="dl" style="color:var(--ac)">Definition</div>
+      <div class="dt"><strong>Access Control</strong> is the selective restriction of access to a place, resource, system, or data. It determines <em>who</em> can access <em>what</em>, under <em>what conditions</em>, and what actions they are permitted to perform. It is the foundational mechanism enforcing the Principle of Least Privilege.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--ac);">
+      <div class="hl">Hinglish Explanation</div>
+      Access control ek <strong>darwaan (gatekeeper)</strong> ki tarah hai. Ghar mein darwaan decide karta hai ki kaun andar aayega aur kaun nahi. Digital world mein access control decide karta hai ki <strong>kaun konsi file, system, ya data access kar sakta hai</strong>. Ek finance employee HR records nahi dekh sakta, ek HR employee payroll calculations change nahi kar sakta — yahi access control hai.
+    </div>
+
+    <div class="sh">The AAA Framework</div>
+    <p class="p">Access control is built on three pillars — <strong>Authentication</strong> (prove who you are), <strong>Authorization</strong> (decide what you can do), and <strong>Accounting/Auditing</strong> (record what you did).</p>
+
+    <div class="sh">Access Control Models</div>
+    <div class="acc">
+      <div class="acc-h open" onclick="tog(this)"><span class="ai">👥</span><span class="at">DAC — Discretionary Access Control</span><span class="b bm">Flexible</span><span class="aa">▶</span></div>
+      <div class="acc-body open">
+        <p class="p"><strong>Definition:</strong> In DAC, the <em>owner</em> of a resource decides who can access it and what permissions they have. It is flexible but weak — if an owner misconfigures permissions or their account is compromised, excessive access is granted.</p>
+        <div class="hin" style="border-left-color:var(--ac);margin:0 0 10px;">
+          <div class="hl">Example</div>
+          Windows file system — ek file banane wala user decide karta hai ki "is file ko kaun read kar sakta hai, kaun edit kar sakta hai." File owner ne galti se "Everyone" ko write permission di — toh koi bhi employee file corrupt kar sakta hai. <strong>Risk: owner ki galti = everyone ki problem.</strong>
+        </div>
+        <p class="p"><strong>Real use:</strong> File system permissions (Linux chmod, Windows ACLs), Google Drive sharing.</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🏛️</span><span class="at">MAC — Mandatory Access Control</span><span class="b bc">High Security</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>Definition:</strong> In MAC, access decisions are made by the <em>system/administrator</em> based on security labels (classifications) assigned to both subjects (users) and objects (resources). Users cannot override or change these assignments — even file owners.</p>
+        <p class="p">Each subject has a <strong>clearance level</strong> (e.g., Top Secret, Secret, Confidential, Unclassified) and each object has a <strong>classification label</strong>. The rule: you can only access objects at or below your clearance level.</p>
+        <div class="hin" style="border-left-color:var(--ac);margin:0 0 10px;">
+          <div class="hl">Example</div>
+          Indian Army mein ek <strong>Corporal</strong> ke paas "Top Secret" clearance nahi hai. Chahe wo kisi document ke folder mein physically ho — system automatically block kar dega access. Koi bhi officer usse permission nahi de sakta — system enforce karta hai. Ye government aur military systems mein use hota hai.
+        </div>
+        <p class="p"><strong>Real use:</strong> SELinux, military SCIF systems, government classified networks (NIPRNet/SIPRNet).</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🏷️</span><span class="at">RBAC — Role-Based Access Control</span><span class="b bl">Industry Standard</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>Definition:</strong> In RBAC, permissions are assigned to <em>roles</em>, not directly to individual users. Users are then assigned to roles. This simplifies management enormously — changing a role's permissions instantly affects all users in that role.</p>
+        <div class="g2">
+          <div>
+            <p class="p"><strong>Structure:</strong></p>
+            <div class="code"><pre><span class="cmt">RBAC Structure:</span>
+<span class="ch">Roles:</span>
+  <span class="cs">Admin</span>   → full system access
+  <span class="cs">Manager</span> → read + approve + report
+  <span class="cs">Staff</span>   → read + submit
+  <span class="cs">Auditor</span> → read-only + logs
+
+<span class="ch">Users assigned to roles:</span>
+  <span class="cn">Bhanu</span>  → Admin
+  <span class="cn">Priya</span>  → Manager
+  <span class="cn">Rahul</span>  → Staff
+
+<span class="cmt">→ Bhanu gets promoted: change role,
+  not individual permissions</span></pre></div>
+          </div>
+          <div>
+            <p class="p"><strong>Advantages:</strong></p>
+            <ul style="font-size:14px;color:var(--muted);margin-left:16px;line-height:1.85;">
+              <li>Scalable — adding new user = assign role</li>
+              <li>Consistent — same role = same access everywhere</li>
+              <li>Auditable — easy to review who has what</li>
+              <li>Least privilege enforced systematically</li>
+              <li>Separation of duties supported</li>
+            </ul>
+            <p class="p" style="margin-top:10px;"><strong>Real use:</strong> Active Directory, AWS IAM roles, hospital EHR systems, banking apps.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">📐</span><span class="at">ABAC — Attribute-Based Access Control</span><span class="b bm">Most Flexible</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>Definition:</strong> ABAC makes access decisions based on <em>attributes</em> — of the user (department, clearance, location), of the resource (classification, project, owner), and of the environment (time of day, IP address, device type). This enables extremely granular, context-aware policies.</p>
+        <div class="hin" style="border-left-color:var(--ac);margin:0 0 10px;">
+          <div class="hl">Example Policy in ABAC</div>
+          "Allow access <strong>IF</strong> user.department = Finance <strong>AND</strong> user.clearance ≥ Level-3 <strong>AND</strong> resource.project = 'Q4-Audit' <strong>AND</strong> time = 09:00–18:00 <strong>AND</strong> device = corporate-managed." Ye sab conditions ek saath check hoti hain. RBAC se zyada powerful hai.
+        </div>
+        <p class="p"><strong>Real use:</strong> AWS IAM policies (condition keys), Zero Trust Architecture, modern cloud-native apps, GDPR-compliant data access systems.</p>
+      </div>
+    </div>
+
+    <div class="sh">Access Control Best Practices</div>
+    <div class="tags">
+      <span class="tag tr">Least Privilege enforcement</span>
+      <span class="tag tb">Regular access reviews (quarterly)</span>
+      <span class="tag tg">Immediate revocation on employee exit</span>
+      <span class="tag ta">Separation of Duties (SoD)</span>
+      <span class="tag tp">Just-In-Time (JIT) privileged access</span>
+      <span class="tag tr">Privileged Access Management (PAM)</span>
+      <span class="tag tb">Access request approval workflows</span>
+      <span class="tag tg">Multi-person authorisation for critical actions</span>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T3 — AUTHENTICATION TECHNIQUES
+══════════════════════════════════ -->
+<div id="t3" class="topic fi">
+  <div class="topic-header" style="background:rgba(26,107,69,.05);border-color:rgba(26,107,69,.2);">
+    <div class="t-icon">🔐</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--at)">Topic 03</div><div class="t-title" style="color:var(--at)">Authentication Techniques</div></div>
+    <div class="topic-bg-num">03</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(26,107,69,.15);">
+    <div class="defbox" style="border-left-color:var(--at);">
+      <div class="dl" style="color:var(--at)">Definition</div>
+      <div class="dt"><strong>Authentication</strong> is the process of verifying the identity of a user, device, or system before granting access. It answers the question: <em>"Are you really who you claim to be?"</em> Authentication is distinct from authorisation — authentication confirms identity; authorisation determines what that identity can do.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--at);">
+      <div class="hl">Hinglish Explanation</div>
+      Authentication ek <strong>ID proof</strong> ki tarah hai. Jab tum bank jaate ho, bank employee tumse Aadhaar maangta hai — proof karo ki tum wahi ho jo bol rahe ho. Digital world mein authentication aise kaam karta hai. Sirf username batana authentication nahi hai — <strong>prove karna hoga</strong>: password, OTP, fingerprint, security key — kuch toh!
+    </div>
+
+    <div class="sh">The Three Authentication Factors</div>
+    <div class="g3">
+      <div class="card" style="border-top:3px solid var(--at);">
+        <div class="ci">🧠</div>
+        <div class="ct">Something You Know</div>
+        <div class="cx"><strong>Knowledge factor.</strong> Passwords, PINs, security questions, passphrases. Weakest factor — can be guessed, stolen, phished, or shared. Still the most widely used.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--at);">
+        <div class="ci">📱</div>
+        <div class="ct">Something You Have</div>
+        <div class="cx"><strong>Possession factor.</strong> Hardware token (YubiKey), authenticator app (TOTP), smart card, SMS OTP, phone. Physical device must be present — harder to steal remotely.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--at);">
+        <div class="ci">👁️</div>
+        <div class="ct">Something You Are</div>
+        <div class="cx"><strong>Inherence factor.</strong> Biometrics — fingerprint, face, iris, voice, typing cadence. Cannot be forgotten or easily stolen. Covered in depth in Topic 04 — Biometrics.</div>
+      </div>
+    </div>
+
+    <div class="sh">Authentication Methods — In Detail</div>
+
+    <div class="acc">
+      <div class="acc-h open" onclick="tog(this)"><span class="ai">🔑</span><span class="at">Password-Based Authentication</span><span class="aa">▶</span></div>
+      <div class="acc-body open">
+        <p class="p">The most common but also the most attacked authentication method. Effectiveness is entirely dependent on password strength, uniqueness, and secure storage.</p>
+        <table class="tbl">
+          <thead><tr><th>Practice</th><th>Secure Approach</th><th>Why It Matters</th></tr></thead>
+          <tbody>
+            <tr><td>Password length</td><td>Minimum 12–16 characters</td><td>Each extra character exponentially increases crack time</td></tr>
+            <tr><td>Storage</td><td>Salted bcrypt / Argon2 hash only</td><td>Prevents rainbow tables; even DB breach doesn't reveal passwords</td></tr>
+            <tr><td>Rotation policy</td><td>Only when compromise suspected (NIST 800-63B)</td><td>Forced rotation causes predictable patterns (Password1→Password2)</td></tr>
+            <tr><td>Breach checking</td><td>Check against HaveIBeenPwned on creation</td><td>Prevent use of already-leaked passwords</td></tr>
+            <tr><td>Manager</td><td>Mandatory use of password manager</td><td>Enables unique 20+ char passwords for every site</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">📲</span><span class="at">MFA — Multi-Factor Authentication</span><span class="b bc">Critical Control</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>MFA</strong> requires successful verification of two or more different factors. Even if an attacker steals a password, they still need the second factor. Microsoft research: MFA blocks <strong>99.9% of automated account attacks</strong>.</p>
+        <div class="g2">
+          <div>
+            <p class="p"><strong>TOTP — Time-Based One-Time Password:</strong></p>
+            <div class="code"><pre><span class="cmt"># How TOTP works (RFC 6238)</span>
+<span class="ch">1. Setup:</span>  Server + App share a <span class="cs">secret key</span>
+<span class="ch">2. Every 30s:</span>
+   TOTP = HMAC-SHA1(secret, floor(time/30))
+   → 6-digit code computed independently
+      by both server AND authenticator app
+<span class="ch">3. Login:</span>
+   User enters password + 6-digit code
+   Server recomputes → if match → access granted
+<span class="cmt">   Code expires every 30 seconds
+   Attacker needs secret key to predict next code</span></pre></div>
+          </div>
+          <div>
+            <p class="p"><strong>FIDO2 / Passkeys (Strongest):</strong></p>
+            <p class="p">Uses public-key cryptography. The private key never leaves the device. Authentication is:</p>
+            <ul style="font-size:13.5px;color:var(--muted);margin-left:16px;line-height:1.8;">
+              <li>Phishing-proof — bound to specific domain</li>
+              <li>Cannot be intercepted in transit</li>
+              <li>No server-side secret to breach</li>
+              <li>Works with biometric unlock on device</li>
+              <li>Supported by Google, Microsoft, Apple</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🔏</span><span class="at">Certificate-Based Authentication (PKI)</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>Definition:</strong> Digital certificates issued by a trusted Certificate Authority (CA) authenticate users, devices, or servers. The certificate contains the entity's public key and is signed by the CA's private key. Used in TLS/HTTPS, smart cards, VPNs, and code signing.</p>
+        <div class="flow">
+          <div class="fs"><div class="fn" style="background:rgba(26,107,69,.1);color:var(--at);">1</div><div class="fc"><div class="ft">User requests certificate from CA</div><div class="fd">Submits identity proof; CA validates and signs the certificate with its private key.</div></div></div>
+          <div class="fs"><div class="fn" style="background:rgba(26,107,69,.1);color:var(--at);">2</div><div class="fc"><div class="ft">Server challenges the client</div><div class="fd">Server sends a random challenge. Client signs it with its private key.</div></div></div>
+          <div class="fs"><div class="fn" style="background:rgba(26,107,69,.1);color:var(--at);">3</div><div class="fc"><div class="ft">Server verifies signature</div><div class="fd">Uses client's public key (from cert) to verify signature. If valid, authentication succeeds — no password needed.</div></div></div>
+        </div>
+        <p class="p"><strong>Used in:</strong> HTTPS, client VPN authentication, SSH key-based auth, smart card login (government, military), IoT device identity.</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🔄</span><span class="at">SSO — Single Sign-On &amp; Federation</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>SSO</strong> allows a user to authenticate once and gain access to multiple independent systems without re-entering credentials. This improves user experience and reduces password fatigue — but creates a single point of failure if the SSO provider is compromised.</p>
+        <div class="hin" style="border-left-color:var(--at);margin:0 0 10px;">
+          <div class="hl">Hinglish Example</div>
+          Jab tum "Google se login karo" button press karte ho kisi website pe — wo SSO hai. Ek baar Google pe login kiya, baaki websites Google ko trust karti hain aur bina password ke access deti hain. Enterprise mein Microsoft Entra ID (Active Directory) SSO use karta hai — ek corporate login se mail, Slack, Salesforce, SAP sab access.
+        </div>
+        <div class="tags">
+          <span class="tag tg">SAML 2.0 — enterprise federation</span>
+          <span class="tag tb">OAuth 2.0 — delegated access</span>
+          <span class="tag ta">OpenID Connect (OIDC) — identity layer on OAuth</span>
+          <span class="tag tp">Kerberos — internal Windows/AD authentication</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T4 — BIOMETRICS
+══════════════════════════════════ -->
+<div id="t4" class="topic fi">
+  <div class="topic-header" style="background:rgba(107,58,158,.05);border-color:rgba(107,58,158,.2);">
+    <div class="t-icon">👁️</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--bio)">Topic 04</div><div class="t-title" style="color:var(--bio)">Biometrics</div></div>
+    <div class="topic-bg-num">04</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(107,58,158,.15);">
+    <div class="defbox" style="border-left-color:var(--bio);">
+      <div class="dl" style="color:var(--bio)">Definition</div>
+      <div class="dt"><strong>Biometrics</strong> is the automated measurement and statistical analysis of people's unique physical or behavioural characteristics for authentication or identification purposes. Biometric traits are inherent to a person — they cannot be forgotten, lost, or easily shared.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--bio);">
+      <div class="hl">Hinglish Explanation</div>
+      Password bhool sakte ho, token kho sakta hai — lekin apni <strong>ungli ya aankhein</strong> toh saath hi hain! Biometrics tumhare body ke unique features use karta hai identity prove karne ke liye. Aadhar card mein fingerprint + iris scan — ye India ka largest biometric database hai (1.3 billion+). Tumhara phone ka face unlock ya fingerprint sensor — daily life biometrics example hai.
+    </div>
+
+    <div class="g2">
+      <div>
+        <div class="sh">Physiological Biometrics</div>
+        <table class="tbl">
+          <thead><tr><th>Type</th><th>How It Works</th><th>Accuracy</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Fingerprint</strong></td><td>Minutiae points (ridge endings, bifurcations) mapped and compared</td><td>Very High (FAR ~0.001%)</td></tr>
+            <tr><td><strong>Iris scan</strong></td><td>Unique patterns in coloured part of eye — 266 measurable features</td><td>Extremely High — higher than fingerprint</td></tr>
+            <tr><td><strong>Facial recognition</strong></td><td>Landmark geometry (inter-eye distance, jaw width, nose shape)</td><td>High but affected by lighting, ageing</td></tr>
+            <tr><td><strong>Retina scan</strong></td><td>Blood vessel patterns on retina — near-unique even in twins</td><td>Extremely High — rare, used in high-security</td></tr>
+            <tr><td><strong>Hand geometry</strong></td><td>3D shape, finger length, width, and palm dimensions</td><td>Moderate — used in physical access</td></tr>
+            <tr><td><strong>Vein pattern</strong></td><td>Near-infrared imaging of palm/finger vein patterns</td><td>High — contactless, hygienic</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="sh">Behavioural Biometrics</div>
+        <table class="tbl">
+          <thead><tr><th>Type</th><th>What Is Measured</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Keystroke dynamics</strong></td><td>Typing rhythm, dwell time, flight time between keystrokes</td></tr>
+            <tr><td><strong>Voice recognition</strong></td><td>Pitch, tone, cadence, accent — unique vocal fingerprint</td></tr>
+            <tr><td><strong>Gait analysis</strong></td><td>Walking pattern captured by sensors or cameras</td></tr>
+            <tr><td><strong>Mouse dynamics</strong></td><td>Movement patterns, click pressure, scroll behaviour</td></tr>
+            <tr><td><strong>Signature dynamics</strong></td><td>Pen pressure, speed, stroke order — not just the shape</td></tr>
+          </tbody>
+        </table>
+        <p class="p" style="margin-top:12px;"><strong>Continuous authentication</strong> uses behavioural biometrics — the system continuously verifies the user throughout the session, detecting if someone else has taken over the keyboard/mouse mid-session.</p>
+      </div>
+    </div>
+
+    <div class="sh">Key Biometric Performance Metrics</div>
+    <div class="g3">
+      <div class="card">
+        <div class="ct">FAR — False Acceptance Rate</div>
+        <div class="cx">Probability that the system accepts an <strong>impostor</strong>. A low FAR is critical for security. FAR = 0.001% means 1 in 100,000 impostors gets through.</div>
+      </div>
+      <div class="card">
+        <div class="ct">FRR — False Rejection Rate</div>
+        <div class="cx">Probability that the system <strong>rejects a legitimate user</strong>. High FRR causes user frustration and helpdesk calls. Trade-off: lowering FAR often raises FRR.</div>
+      </div>
+      <div class="card">
+        <div class="ct">EER — Equal Error Rate</div>
+        <div class="cx">The threshold at which FAR = FRR. Lower EER = better system. Used to compare biometric systems — a system with EER of 0.1% is more accurate than one with EER of 1%.</div>
+      </div>
+    </div>
+
+    <div class="sh">Biometric Vulnerabilities &amp; Limitations</div>
+    <div class="g2">
+      <div class="card"><div class="ci">🎭</div><div class="ct">Spoofing Attacks</div><div class="cx">Fake fingerprint (gelatin), 3D-printed face mask, voice synthesis (deepfakes) used to fool biometric sensors. Liveness detection (asking user to blink, move) is the countermeasure.</div></div>
+      <div class="card"><div class="ci">🔒</div><div class="ct">Irrevocability Problem</div><div class="cx">If a password is breached, you change the password. But if biometric data is stolen — you cannot "change" your fingerprint. This makes biometric database breaches extremely serious.</div></div>
+      <div class="card"><div class="ci">🌐</div><div class="ct">Cross-Border Privacy Laws</div><div class="cx">Biometric data is classified as "sensitive personal data" under GDPR, India's DPDP Act, BIPA (Illinois). Collecting it without explicit consent carries massive fines.</div></div>
+      <div class="card"><div class="ci">📊</div><div class="ct">Environmental Factors</div><div class="cx">Dirty or injured fingers, poor lighting (face recognition), background noise (voice), glasses (iris) — all degrade biometric accuracy in real-world deployments.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T5 — AUDIT & LOGGING
+══════════════════════════════════ -->
+<div id="t5" class="topic fi">
+  <div class="topic-header" style="background:rgba(139,94,8,.05);border-color:rgba(139,94,8,.2);">
+    <div class="t-icon">📋</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--al)">Topic 05</div><div class="t-title" style="color:var(--al)">Audit and Logging</div></div>
+    <div class="topic-bg-num">05</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(139,94,8,.15);">
+    <div class="defbox" style="border-left-color:var(--al);">
+      <div class="dl" style="color:var(--al)">Definition</div>
+      <div class="dt"><strong>Audit and Logging</strong> is the systematic recording of system events, user actions, and security-relevant activities so that security teams can detect anomalies, investigate incidents, demonstrate compliance, and reconstruct the timeline of an attack. Logs are the "flight recorder" of a security incident — they tell you what happened, when, by whom, and from where.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--al);">
+      <div class="hl">Hinglish Explanation</div>
+      Sochte hain CCTV camera — wo record karta hai ki kab kaun andar aaya, kya kiya, kab gaya. Audit logs exactly yahi karte hain digital systems mein. <strong>Login attempts, file access, admin commands, configuration changes, data downloads</strong> — sab kuch log hota hai. Agar koi breach hota hai toh log bataate hain "exactly kya hua" — jaise crime scene mein CCTV footage.
+    </div>
+
+    <div class="sh">What Should Be Logged</div>
+    <div class="g2">
+      <div class="card"><div class="ci">🔑</div><div class="ct">Authentication Events</div><div class="cx">All login attempts (success and failure), logout events, password changes, MFA events, privilege escalation, account lockouts. Failed logins indicate brute-force; logins from new locations indicate compromise.</div></div>
+      <div class="card"><div class="ci">📁</div><div class="ct">Data Access Events</div><div class="cx">Who accessed what file/record, when, from where, what operation (read/write/delete). Critical for insider threat detection and data breach forensics.</div></div>
+      <div class="card"><div class="ci">⚙️</div><div class="ct">System &amp; Config Changes</div><div class="cx">Firewall rule changes, user account creation/deletion, privilege grants, software installation, system reboots. Attackers often modify configs to maintain access.</div></div>
+      <div class="card"><div class="ci">🌐</div><div class="ct">Network Events</div><div class="cx">Connection attempts, DNS queries, data transfers (volume and destination), new listening ports, VPN connections. Useful for detecting C2 communication and data exfiltration.</div></div>
+    </div>
+
+    <div class="sh">SIEM — Security Information &amp; Event Management</div>
+    <p class="p">A <strong>SIEM</strong> aggregates logs from all sources — servers, firewalls, endpoints, cloud, applications — into a centralised platform. It normalises the data, correlates events across sources, applies detection rules, and generates alerts. SIEM is the "brain" of a Security Operations Centre (SOC).</p>
+    <div class="g2">
+      <div class="card"><div class="ct">Log Correlation Example</div><div class="cx">Single event: "User failed login" → low priority.<br>Correlated: "Same user failed login 300 times in 2 minutes from 50 different IPs" → SIEM alert: Distributed Brute Force Attack. No single log had the full picture.</div></div>
+      <div class="card"><div class="ct">Popular SIEM Platforms</div><div class="cx"><strong>Splunk</strong> — market leader, powerful query language (SPL).<br><strong>Microsoft Sentinel</strong> — cloud-native SIEM + SOAR.<br><strong>IBM QRadar</strong> — enterprise SIEM.<br><strong>Elastic SIEM</strong> — open source option.<br><strong>Chronicle (Google)</strong> — petabyte-scale logs.</div></div>
+    </div>
+
+    <div class="sh">Log Integrity &amp; Retention</div>
+    <p class="p">Logs are only useful if they are <strong>tamper-proof</strong> and <strong>retained long enough</strong>. Attackers often try to delete or modify logs to hide their tracks. Best practices: forward logs to a <em>write-once remote SIEM</em> immediately; use cryptographic log chaining (each entry hashes the previous one); retain logs for minimum 90 days online and 1 year archived (most compliance frameworks require this).</p>
+    <div class="tags">
+      <span class="tag ta">Centralised log collection (syslog, Fluentd)</span>
+      <span class="tag ta">Immutable log storage (WORM — Write Once Read Many)</span>
+      <span class="tag ta">Log integrity via cryptographic chaining</span>
+      <span class="tag ta">NTP time synchronisation (for accurate timestamps)</span>
+      <span class="tag ta">GDPR/PCI-DSS compliant retention periods</span>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T6 — DECEPTION TECHNIQUES
+══════════════════════════════════ -->
+<div id="t6" class="topic fi">
+  <div class="topic-header" style="background:rgba(30,92,110,.05);border-color:rgba(30,92,110,.2);">
+    <div class="t-icon">🍯</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--dec)">Topic 06</div><div class="t-title" style="color:var(--dec)">Deception Techniques</div></div>
+    <div class="topic-bg-num">06</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(30,92,110,.15);">
+    <div class="defbox" style="border-left-color:var(--dec);">
+      <div class="dl" style="color:var(--dec)">Definition</div>
+      <div class="dt"><strong>Deception techniques</strong> are security mechanisms that deliberately mislead attackers by presenting fake targets, decoy data, or fabricated environments — causing them to waste time and resources on traps while generating high-fidelity alerts that reveal their presence and methods.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--dec);">
+      <div class="hl">Hinglish Explanation</div>
+      Imagine karo ek museum jisme real paintings ke saath kuch <strong>fake paintings</strong> bhi rakhi hain — sensors se equipped. Chor jab fake painting churaane ki koshish kare, alarm baj jaata hai aur security ko pata chal jaata hai. Real painting safe rehti hai. Cyber deception exactly yahi karta hai — <strong>hackers ko fake targets pe attract karo, unhe detect karo, real systems safe rakho</strong>.
+    </div>
+
+    <div class="sh">Honeypots</div>
+    <p class="p">A <strong>honeypot</strong> is a decoy system intentionally designed to look like a legitimate, valuable target — but any interaction with it is by definition suspicious. Because no legitimate user or process should ever access a honeypot, every connection is a potential attacker.</p>
+    <div class="g2">
+      <div class="card"><div class="ci">🍯</div><div class="ct">Low-Interaction Honeypot</div><div class="cx">Emulates services (fake SSH, FTP, HTTP). Collects attacker IP, tool fingerprints, credentials tried. Low risk — no real OS for attacker to escape from. Used for mass threat intelligence collection. Tools: Honeyd, Cowrie.</div></div>
+      <div class="card"><div class="ci">🏗️</div><div class="ct">High-Interaction Honeypot</div><div class="cx">A real (but isolated) system the attacker can fully interact with. Provides deep behavioural intelligence — what commands do they run? What tools do they install? What persistence mechanisms do they use? Managed carefully to prevent it becoming a launchpad.</div></div>
+      <div class="card"><div class="ci">🕸️</div><div class="ct">Honeynet</div><div class="cx">A network of multiple honeypots simulating an entire enterprise environment — fake AD server, fake file server, fake workstations. Allows studying lateral movement behaviour of APT-level attackers across an entire fake organisation.</div></div>
+      <div class="card"><div class="ci">🍯</div><div class="ct">Honeytoken / Honey File</div><div class="cx">Fake data files (e.g., "Passwords_Backup.xlsx") with embedded tracking links or beacons. When an attacker opens the file — even from an air-gapped system — a callback is made revealing attacker location and identity.</div></div>
+    </div>
+
+    <div class="sh">Honeypot Use Cases in Enterprises</div>
+    <div class="flow">
+      <div class="fs"><div class="fn" style="background:rgba(30,92,110,.1);color:var(--dec);">▶</div><div class="fc"><div class="ft">Early Breach Detection</div><div class="fd">Deploy honeypots in internal network segments. Any scan or connection to the honeypot means an attacker is already inside — something perimeter defences missed. Zero false-positive alert rate.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(30,92,110,.1);color:var(--dec);">▶</div><div class="fc"><div class="ft">Threat Intelligence Collection</div><div class="fd">Study what vulnerabilities attackers are scanning for, what exploits they carry, what malware they deploy. This intelligence directly improves your defensive posture.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(30,92,110,.1);color:var(--dec);">▶</div><div class="fc"><div class="ft">Attacker Slow-Down</div><div class="fd">A well-decorated network with many fake assets forces attackers to investigate each one before moving on. This "noise" costs them time and increases detection probability.</div></div></div>
+    </div>
+    <div class="rc" style="border-top-color:var(--dec);">
+      <div class="rl">Famous Honeypot Operation</div>
+      <div class="rh">Operation Buccaneer — Clifford Stoll's Hunt (1986)</div>
+      <div class="rb">The first famous honeypot usage — astronomer Clifford Stoll noticed a 75-cent accounting discrepancy in his computer at Lawrence Berkeley National Laboratory. He set up a fake "SDI network" honeypot to attract the intruder. Over 10 months, he traced a West German hacker (Marcus Hess) selling information to the KGB. This story, told in his book "The Cuckoo's Egg," defined the modern honeypot concept.</div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T7 — DoS FILTERS
+══════════════════════════════════ -->
+<div id="t7" class="topic fi">
+  <div class="topic-header" style="background:rgba(139,26,26,.05);border-color:rgba(139,26,26,.2);">
+    <div class="t-icon">🌊</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--dos)">Topic 07</div><div class="t-title" style="color:var(--dos)">Denial of Service (DoS) Filters</div></div>
+    <div class="topic-bg-num">07</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(139,26,26,.15);">
+    <div class="defbox" style="border-left-color:var(--dos);">
+      <div class="dl" style="color:var(--dos)">Definition</div>
+      <div class="dt"><strong>DoS/DDoS Filters</strong> are systems, services, and configurations specifically designed to detect, absorb, or redirect malicious traffic designed to overwhelm and disable systems — distinguishing between legitimate and attack traffic at massive scale and blocking the attack while allowing normal users to continue accessing services.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--dos);">
+      <div class="hl">Hinglish Explanation</div>
+      DDoS attack mein enemy lakhs of cars ko ek road pe bhej deta hai — road jam ho jaati hai, real log nahi nikal sakte. DoS filters ek <strong>intelligent traffic management system</strong> ki tarah hain — fake cars (malicious traffic) ko identify karo aur alag raste bhejo, real cars (legitimate users) ko free passage do. Ye filtering DNS level se leke server level tak kaafi jagah hoti hai.
+    </div>
+
+    <div class="sh">DoS/DDoS Defence Mechanisms</div>
+    <div class="acc">
+      <div class="acc-h open" onclick="tog(this)"><span class="ai">🌐</span><span class="at">CDN + Anycast Scrubbing</span><span class="b bl">Layer 3/4</span><span class="aa">▶</span></div>
+      <div class="acc-body open">
+        <p class="p"><strong>CDN (Content Delivery Network)</strong> distributes traffic across hundreds of global points of presence (PoPs). A 1 Tbps attack hitting a single server would take it down instantly. That same 1 Tbps divided across 200 PoPs is only 5 Gbps each — easily absorbed. Cloudflare's network has 200+ Tbps of capacity.</p>
+        <p class="p"><strong>Anycast routing</strong> assigns the same IP address to multiple geographically distributed servers. BGP routing automatically directs traffic to the nearest node. DDoS traffic is automatically distributed and absorbed globally.</p>
+        <div class="tags"><span class="tag tr">Cloudflare</span><span class="tag tr">Akamai Kona</span><span class="tag tr">AWS Shield Advanced</span><span class="tag tr">Fastly</span><span class="tag tr">Azure DDoS Protection</span></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">⏱️</span><span class="at">Rate Limiting &amp; Traffic Shaping</span><span class="b bm">Layer 7</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>Rate limiting</strong> restricts the number of requests a single IP address or user can make per second/minute. Legitimate users rarely hit these limits; automated attack tools do immediately.</p>
+        <div class="code"><pre><span class="cmt"># Nginx rate limiting configuration</span>
+<span class="ck">limit_req_zone</span> $binary_remote_addr <span class="ck">zone</span>=api:<span class="cn">10m</span> <span class="ck">rate</span>=<span class="cn">10r/s</span>;
+
+<span class="ck">server</span> {
+  location /api/ {
+    <span class="ck">limit_req</span> <span class="ck">zone</span>=api <span class="ck">burst</span>=<span class="cn">20</span> <span class="ck">nodelay</span>;
+    <span class="cmt"># Max 10 requests/sec, burst of 20 allowed
+    # 11th+ request → 429 Too Many Requests</span>
+  }
+}
+<span class="cmt"># SYN cookies defend against SYN flood:
+# Server doesn't allocate state until 3-way handshake complete</span></pre></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🤖</span><span class="at">Bot Detection &amp; CAPTCHA</span><span class="b bm">Layer 7</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Modern bot detection analyses hundreds of signals: mouse movement patterns, keyboard behaviour, browser fingerprint, TLS fingerprint (JA3), HTTP header ordering, JavaScript execution timing. Bots exhibit mechanically perfect behaviour that differs from humans.</p>
+        <p class="p"><strong>CAPTCHA</strong> (Completely Automated Public Turing test to tell Computers and Humans Apart) requires solving challenges that are easy for humans but hard for machines. Modern versions (reCAPTCHA v3) are invisible — scoring behaviour continuously without user interaction.</p>
+        <div class="tags"><span class="tag tb">reCAPTCHA v3</span><span class="tag tb">hCaptcha</span><span class="tag tb">Cloudflare Turnstile</span><span class="tag tg">JA3 TLS fingerprinting</span><span class="tag ta">Browser fingerprinting</span></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🚦</span><span class="at">BGP Blackholing &amp; Traffic Diversion</span><span class="b bc">ISP Level</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>BGP Blackholing (RTBH)</strong>: During a massive volumetric DDoS, the victim instructs their ISP to drop all traffic destined for the attacked IP at the router level. The attacked resource becomes unreachable — but so does the attacker's traffic. A last resort when the attack volume exceeds scrubbing capacity.</p>
+        <p class="p"><strong>Traffic diversion to scrubbing centre</strong>: Traffic is re-routed to a specialised scrubbing centre that filters malicious packets and forwards only clean traffic to the origin server. This allows the service to remain partially available even during large attacks.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T8 — ETHICAL HACKING
+══════════════════════════════════ -->
+<div id="t8" class="topic fi">
+  <div class="topic-header" style="background:rgba(45,90,27,.05);border-color:rgba(45,90,27,.2);">
+    <div class="t-icon">🤍</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--eth)">Topic 08</div><div class="t-title" style="color:var(--eth)">Ethical Hacking</div></div>
+    <div class="topic-bg-num">08</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(45,90,27,.15);">
+    <div class="defbox" style="border-left-color:var(--eth);">
+      <div class="dl" style="color:var(--eth)">Definition</div>
+      <div class="dt"><strong>Ethical Hacking</strong> (Penetration Testing / White Hat Hacking) is the <em>authorised, deliberate</em> attempt to probe, test, and exploit vulnerabilities in systems, networks, or applications — with the explicit permission of the owner — for the purpose of identifying and fixing weaknesses before malicious actors find them.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--eth);">
+      <div class="hl">Hinglish Explanation</div>
+      Ek company apne ghar (system) ki security check karwaana chahti hai. Toh wo ek <strong>trusted chor (ethical hacker)</strong> ko hire karti hai — bolta hai "aao hamare ghar mein ghusne ki koshish karo, jo bhi jhiriya mile batao." Ye ethical hacker ghus jaata hai (ya ghusne ki koshish karta hai), sab vulnerabilities list karta hai, report deta hai — aur company fix karti hai. Permission + legal agreement = ethical hacking. Permission ke bina same kaam = criminal hacking.
+    </div>
+
+    <div class="sh">The Penetration Testing Methodology (PTES)</div>
+    <div class="flow">
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">1</div><div class="fc"><div class="ft">Pre-Engagement &amp; Scoping</div><div class="fd">Define scope (which systems can be tested), rules of engagement (what is off-limits), testing windows, emergency contact procedures. Sign a <strong>Statement of Work (SoW)</strong> and <strong>Rules of Engagement</strong>. Never skip this — working without written authorisation is illegal regardless of intent.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">2</div><div class="fc"><div class="ft">Reconnaissance (Information Gathering)</div><div class="fd"><strong>Passive</strong>: OSINT — LinkedIn, Shodan, DNS records, WHOIS, job postings (reveal technology stack), Google dorking. <strong>Active</strong>: Network scanning (Nmap), service enumeration, banner grabbing. Goal: build a complete map of the attack surface.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">3</div><div class="fc"><div class="ft">Vulnerability Analysis</div><div class="fd">Analyse gathered information to identify potential vulnerabilities. Use automated scanners (Nessus, OpenVAS) and manual review. Cross-reference against CVE databases. Prioritise by exploitability and impact.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">4</div><div class="fc"><div class="ft">Exploitation</div><div class="fd">Attempt to exploit discovered vulnerabilities — with restraint and care. Document evidence (screenshots, output logs) for the report. The goal is to <em>prove exploitability</em>, not to cause damage. Tools: Metasploit, Burp Suite, custom scripts.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">5</div><div class="fc"><div class="ft">Post-Exploitation &amp; Pivoting</div><div class="fd">From the initial foothold, demonstrate realistic attacker behaviour — escalate privileges, access sensitive data, attempt lateral movement. Show the <em>business impact</em> of the vulnerability, not just its technical existence.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">6</div><div class="fc"><div class="ft">Reporting</div><div class="fd">Deliver a comprehensive report with: executive summary (for management), technical findings (for security team), risk ratings (CVSS scores), reproduction steps, and remediation recommendations. The report is the entire value of the engagement.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(45,90,27,.1);color:var(--eth);">7</div><div class="fc"><div class="ft">Remediation Verification</div><div class="fd">After the client fixes vulnerabilities, the ethical hacker re-tests to confirm the fixes are effective and haven't introduced new issues. Critical step often skipped — completing the security improvement loop.</div></div></div>
+    </div>
+
+    <div class="sh">Types of Penetration Tests</div>
+    <table class="tbl">
+      <thead><tr><th>Test Type</th><th>Tester Knowledge</th><th>Simulates</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Black Box</strong></td><td>Zero — only knows target name</td><td>External attacker with no prior knowledge</td><td>Realistic external threat simulation</td></tr>
+        <tr><td><strong>White Box</strong></td><td>Full — source code, architecture, credentials</td><td>Insider or attacker with full access</td><td>Thorough, efficient code &amp; architecture review</td></tr>
+        <tr><td><strong>Grey Box</strong></td><td>Partial — some credentials, some network info</td><td>Attacker with stolen employee credentials</td><td>Most realistic real-world scenario</td></tr>
+        <tr><td><strong>Red Team</strong></td><td>Varies — multi-stage campaign</td><td>Full APT-style attack over weeks/months</td><td>Testing detection &amp; response capabilities (Blue Team)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sh">Key Certifications in Ethical Hacking</div>
+    <div class="tags">
+      <span class="tag tg">CEH — Certified Ethical Hacker (EC-Council)</span>
+      <span class="tag tg">OSCP — Offensive Security Certified Professional (hands-on, gold standard)</span>
+      <span class="tag tg">GPEN — GIAC Penetration Tester</span>
+      <span class="tag tg">PNPT — Practical Network Penetration Tester</span>
+      <span class="tag tg">eJPT — eLearnSecurity Junior Penetration Tester (beginner)</span>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T9 — FIREWALLS
+══════════════════════════════════ -->
+<div id="t9" class="topic fi">
+  <div class="topic-header" style="background:rgba(26,61,107,.05);border-color:rgba(26,61,107,.2);">
+    <div class="t-icon">🧱</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--fw)">Topic 09</div><div class="t-title" style="color:var(--fw)">Firewalls</div></div>
+    <div class="topic-bg-num">09</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(26,61,107,.15);">
+    <div class="defbox" style="border-left-color:var(--fw);">
+      <div class="dl" style="color:var(--fw)">Definition</div>
+      <div class="dt">A <strong>Firewall</strong> is a network security device (hardware or software) that monitors and controls incoming and outgoing network traffic based on a set of predefined security rules. It establishes a barrier between trusted internal networks and untrusted external networks, permitting legitimate traffic and blocking potentially harmful traffic.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--fw);">
+      <div class="hl">Hinglish Explanation</div>
+      Firewall ek <strong>chowkidar (security guard)</strong> ki tarah hai jo network ki boundary pe khada hai. Har packet jo andar ya bahar jaana chahta hai — chowkidar check karta hai: "kahan se aa raha hai? kahan ja raha hai? kaun sa port? allowed hai ya nahi?" Rules ke basis pe allow ya block karta hai. Ghar ke garam kamare aur baaki ghar ke beech jo aag rok ne wali deewar hoti hai — usi "fire wall" se ye naam aaya hai.
+    </div>
+
+    <!-- Firewall diagram -->
+    <div class="fw-diagram">
+      <div class="fw-label">Network Flow Through a Firewall</div>
+      <div class="fw-row">
+        <div class="fw-box" style="color:var(--dos);border-color:rgba(139,26,26,.3);background:rgba(139,26,26,.06);">Internet 🌐</div>
+        <span class="fw-arrow">→</span>
+        <div class="fw-box" style="color:var(--fw);border-color:rgba(26,61,107,.3);background:rgba(26,61,107,.06);">🧱 Perimeter Firewall</div>
+        <span class="fw-arrow">→</span>
+        <div class="fw-box" style="color:var(--dec);border-color:rgba(30,92,110,.3);background:rgba(30,92,110,.06);">DMZ (Web/Mail Servers)</div>
+        <span class="fw-arrow">→</span>
+        <div class="fw-box" style="color:var(--fw);border-color:rgba(26,61,107,.3);background:rgba(26,61,107,.06);">🧱 Internal Firewall</div>
+        <span class="fw-arrow">→</span>
+        <div class="fw-box" style="color:var(--at);border-color:rgba(26,107,69,.3);background:rgba(26,107,69,.06);">Internal Network 🏢</div>
+      </div>
+    </div>
+
+    <div class="sh">Types of Firewalls — Evolution</div>
+    <div class="acc">
+      <div class="acc-h open" onclick="tog(this)"><span class="ai">1️⃣</span><span class="at">Packet Filtering Firewall (Generation 1)</span><span class="aa">▶</span></div>
+      <div class="acc-body open">
+        <p class="p">Inspects individual packets in isolation based on header fields: source/destination IP, source/destination port, and protocol (TCP/UDP/ICMP). Fast and simple, but has no awareness of connection state or application context.</p>
+        <div class="code"><pre><span class="cmt"># Example iptables packet filter rules (Linux)</span>
+<span class="cmt"># Allow established connections</span>
+<span class="ck">iptables</span> -A INPUT -m state --state ESTABLISHED,RELATED -j <span class="cs">ACCEPT</span>
+
+<span class="cmt"># Allow SSH from specific IP only</span>
+<span class="ck">iptables</span> -A INPUT -p tcp --dport <span class="cn">22</span> -s <span class="cn">203.0.113.10</span> -j <span class="cs">ACCEPT</span>
+
+<span class="cmt"># Allow HTTP and HTTPS</span>
+<span class="ck">iptables</span> -A INPUT -p tcp --dport <span class="cn">80</span> -j <span class="cs">ACCEPT</span>
+<span class="ck">iptables</span> -A INPUT -p tcp --dport <span class="cn">443</span> -j <span class="cs">ACCEPT</span>
+
+<span class="cmt"># Drop everything else</span>
+<span class="ck">iptables</span> -A INPUT -j <span class="cs">DROP</span></pre></div>
+        <p class="p"><strong>Weakness:</strong> Cannot distinguish between a legitimate connection response and a new unsolicited connection on the same port. Vulnerable to IP spoofing.</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">2️⃣</span><span class="at">Stateful Inspection Firewall (Generation 2)</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Maintains a <strong>state table</strong> tracking all active connections. Instead of evaluating each packet in isolation, it checks whether the packet belongs to an established, legitimate connection. An unsolicited packet claiming to be part of an established connection is rejected — even if its header fields look valid.</p>
+        <p class="p">This defeats many IP spoofing and session hijacking attacks. The state table records: source IP, destination IP, source port, destination port, TCP state (SYN, SYN-ACK, ESTABLISHED, FIN), and connection timeout.</p>
+        <p class="p"><strong>Used in:</strong> Cisco ASA, pfSense, most enterprise perimeter firewalls. The standard for network-layer firewall protection.</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">3️⃣</span><span class="at">Application Layer Firewall / WAF (Generation 3)</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Operates at Layer 7 (Application layer). Understands application protocols (HTTP, HTTPS, DNS, FTP, SMTP). Can inspect the actual <em>content</em> of traffic — detecting SQL injection in a URL parameter, cross-site scripting in a request body, or malware in an HTTP response.</p>
+        <p class="p">A <strong>Web Application Firewall (WAF)</strong> is a specific application firewall placed in front of web applications. It applies OWASP Top 10 rules, custom policies, and ML-based anomaly detection to HTTP traffic.</p>
+        <div class="hin" style="border-left-color:var(--fw);margin:0 0 10px;">
+          <div class="hl">Example</div>
+          Traditional firewall: "Port 443 allow karo" — bas itna. WAF us allowed HTTPS request ko bhi X-ray karta hai: "Is URL mein <code style="font-family:var(--font-m);font-size:12px;">' OR 1=1</code> toh nahi hai? Is cookie mein koi script toh inject nahi ki gayi?" — <strong>application content level pe filtering</strong>.
+        </div>
+        <div class="tags"><span class="tag tb">AWS WAF</span><span class="tag tb">Cloudflare WAF</span><span class="tag tb">ModSecurity (open source)</span><span class="tag tb">F5 Advanced WAF</span><span class="tag tb">Imperva</span></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">4️⃣</span><span class="at">NGFW — Next-Generation Firewall (Generation 4)</span><span class="b bl">Modern Standard</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">NGFW combines stateful inspection + application awareness + <strong>deep packet inspection (DPI)</strong> + intrusion prevention (IPS) + SSL/TLS decryption + user identity awareness + threat intelligence feeds — all in a single device. It can identify which application is generating traffic, not just which port.</p>
+        <table class="tbl">
+          <thead><tr><th>Feature</th><th>Traditional FW</th><th>NGFW</th></tr></thead>
+          <tbody>
+            <tr><td>Application identification</td><td>❌ Port-based only</td><td>✅ App-aware (Zoom, Skype, BitTorrent)</td></tr>
+            <tr><td>User identification</td><td>❌ IP only</td><td>✅ Integrates with AD — per-user policies</td></tr>
+            <tr><td>SSL inspection</td><td>❌ Cannot see inside HTTPS</td><td>✅ Decrypts, inspects, re-encrypts</td></tr>
+            <tr><td>Built-in IPS</td><td>❌ Separate device</td><td>✅ Inline threat prevention</td></tr>
+            <tr><td>Threat intelligence</td><td>❌ Static rules</td><td>✅ Live feeds, auto-updated signatures</td></tr>
+          </tbody>
+        </table>
+        <div class="tags"><span class="tag tb">Palo Alto Networks NGFW</span><span class="tag tb">Cisco Firepower</span><span class="tag tb">Fortinet FortiGate</span><span class="tag tb">Check Point NGFW</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T10 — VULNERABILITY SCANNING
+══════════════════════════════════ -->
+<div id="t10" class="topic fi">
+  <div class="topic-header" style="background:rgba(122,63,0,.05);border-color:rgba(122,63,0,.2);">
+    <div class="t-icon">🔎</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--vs)">Topic 10</div><div class="t-title" style="color:var(--vs)">Vulnerability Scanning</div></div>
+    <div class="topic-bg-num">10</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(122,63,0,.15);">
+    <div class="defbox" style="border-left-color:var(--vs);">
+      <div class="dl" style="color:var(--vs)">Definition</div>
+      <div class="dt"><strong>Vulnerability Scanning</strong> is the automated, systematic process of identifying known security weaknesses in systems, networks, and applications by comparing their configurations and software versions against a continuously updated database of known vulnerabilities (CVEs). It provides a point-in-time snapshot of your security posture.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--vs);">
+      <div class="hl">Hinglish Explanation</div>
+      Vulnerability scanner ek <strong>doctor ki X-ray machine</strong> ki tarah hai jo tumhare poore network ka "health check" karta hai. Ye automatically puchta hai: "Is server ka Windows update hai? Is website mein SQL injection possible hai? Is router ka default password toh nahi chala raha?" Aur ek report deta hai: "Yahan 3 critical vulnerabilities hain, yahan 7 medium hain — pehle inhe fix karo."
+    </div>
+
+    <div class="sh">Vulnerability Scanning vs Penetration Testing</div>
+    <table class="tbl">
+      <thead><tr><th>Aspect</th><th>Vulnerability Scanning</th><th>Penetration Testing</th></tr></thead>
+      <tbody>
+        <tr><td>Method</td><td>Automated tool-based scan</td><td>Manual + automated by skilled tester</td></tr>
+        <tr><td>Exploitation</td><td>❌ Only identifies — does NOT exploit</td><td>✅ Actually exploits to prove impact</td></tr>
+        <tr><td>Frequency</td><td>Weekly/monthly continuous scanning</td><td>Annually or after major changes</td></tr>
+        <tr><td>Cost</td><td>Low — automated SaaS tools</td><td>High — skilled human hours</td></tr>
+        <tr><td>False positives</td><td>Higher — automated tools miss context</td><td>Lower — human validates findings</td></tr>
+        <tr><td>Output</td><td>Long list of CVEs with severity scores</td><td>Narrative report with business impact</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sh">Types of Vulnerability Scans</div>
+    <div class="g2">
+      <div class="card"><div class="ci">🌐</div><div class="ct">Unauthenticated (External) Scan</div><div class="cx">Scanner has no credentials — simulates an external attacker's view. Identifies services exposed to the internet, open ports, outdated versions visible from outside. Misses many internal vulnerabilities that require login to detect.</div></div>
+      <div class="card"><div class="ci">🔑</div><div class="ct">Authenticated (Credentialed) Scan</div><div class="cx">Scanner is given read-only credentials. Can log into systems and check installed software versions, registry settings, patch levels, user configurations. Far more accurate and complete than unauthenticated scans. Recommended for internal assessments.</div></div>
+      <div class="card"><div class="ci">🕸️</div><div class="ct">Web Application Scan (DAST)</div><div class="cx">Dynamic Application Security Testing — actively probes a running web app for OWASP Top 10 vulnerabilities: SQL injection, XSS, CSRF, broken auth, etc. Tools: OWASP ZAP, Burp Suite Pro, Acunetix, Veracode DAST.</div></div>
+      <div class="card"><div class="ci">📋</div><div class="ct">SAST — Static Code Analysis</div><div class="cx">Analyses source code without executing it — finds vulnerabilities in the code itself before deployment. Integrates into CI/CD pipelines. Tools: SonarQube, Checkmarx, Snyk. Catches issues like hardcoded secrets, SQL string concatenation, buffer overflow patterns.</div></div>
+    </div>
+
+    <div class="sh">CVSS — Common Vulnerability Scoring System</div>
+    <p class="p">CVSS is the industry-standard scoring system (0–10) for rating the severity of vulnerabilities, enabling organisations to prioritise remediation effort.</p>
+    <table class="tbl">
+      <thead><tr><th>Score Range</th><th>Severity</th><th>Example Factors</th><th>Remediation Priority</th></tr></thead>
+      <tbody>
+        <tr><td><span class="b bc">9.0–10.0</span></td><td><strong>Critical</strong></td><td>Network-exploitable, no auth needed, RCE possible, zero user interaction</td><td>Patch within 24–72 hours</td></tr>
+        <tr><td><span class="b bh">7.0–8.9</span></td><td><strong>High</strong></td><td>Network-exploitable, high impact on CIA, some prerequisites</td><td>Patch within 7–30 days</td></tr>
+        <tr><td><span class="b bm">4.0–6.9</span></td><td><strong>Medium</strong></td><td>Local or complex exploitation, moderate impact</td><td>Patch within 90 days</td></tr>
+        <tr><td><span class="b bl">0.1–3.9</span></td><td><strong>Low</strong></td><td>Limited impact, requires significant attacker prerequisites</td><td>Patch in next scheduled cycle</td></tr>
+      </tbody>
+    </table>
+    <div class="tags"><span class="tag ta">Nessus (Tenable)</span><span class="tag ta">OpenVAS / Greenbone</span><span class="tag ta">Qualys VMDR</span><span class="tag ta">Rapid7 InsightVM</span><span class="tag ta">OWASP ZAP</span><span class="tag ta">Nikto</span><span class="tag ta">Shodan</span></div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T11 — SECURITY POLICIES
+══════════════════════════════════ -->
+<div id="t11" class="topic fi">
+  <div class="topic-header" style="background:rgba(74,26,107,.05);border-color:rgba(74,26,107,.2);">
+    <div class="t-icon">📜</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--sp)">Topic 11</div><div class="t-title" style="color:var(--sp)">Security Policies</div></div>
+    <div class="topic-bg-num">11</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(74,26,107,.15);">
+    <div class="defbox" style="border-left-color:var(--sp);">
+      <div class="dl" style="color:var(--sp)">Definition</div>
+      <div class="dt">A <strong>Security Policy</strong> is a formal document that defines an organisation's security requirements, rules of behaviour, and responsibilities. It communicates what must be protected, why it must be protected, who is responsible, and what the consequences of non-compliance are. Security policies are the foundation of every technical safeguard — they provide the "why" and "what" while procedures provide the "how."</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--sp);">
+      <div class="hl">Hinglish Explanation</div>
+      Security policy ek <strong>company ka constitution</strong> hai security ke liye. Jaise desh ka constitution bata ta hai ki nagrik ke rights kya hain aur kya nahi kar sakte — company ki security policy bata ti hai ki employees kya kar sakte hain, kya nahi, data kaise handle karein, breach hone pe kya karein. Bina policy ke technical controls ek direction ke bina hain — koi nahi jaanta ki kya allowed hai aur kya nahi.
+    </div>
+
+    <div class="sh">Key Security Policy Documents</div>
+    <div class="acc">
+      <div class="acc-h open" onclick="tog(this)"><span class="ai">📱</span><span class="at">Acceptable Use Policy (AUP)</span><span class="aa">▶</span></div>
+      <div class="acc-body open">
+        <p class="p">Defines what employees are permitted and prohibited to do with company IT resources — computers, internet, email, mobile devices. Typically covers: prohibition of illegal activity, personal use limitations, social media guidelines, data handling requirements.</p>
+        <div class="hin" style="border-left-color:var(--sp);margin:0;">
+          <div class="hl">Example AUP Clauses</div>
+          "Corporate laptops shall not be used for personal cryptocurrency mining." | "Confidential data shall not be stored on personal cloud drives (Dropbox, personal Google Drive)." | "Employees shall not install unauthorised software on corporate devices." | "All company data transmitted externally must use approved encrypted channels."
+        </div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🔑</span><span class="at">Password Policy</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Defines minimum password complexity requirements, storage rules, rotation requirements, and MFA mandates. Should align with NIST 800-63B guidance: minimum 12+ characters, check against breach databases, MFA required for all privileged accounts, no mandatory rotation unless compromise is suspected.</p>
+        <table class="tbl">
+          <thead><tr><th>Element</th><th>Minimum Requirement</th><th>Best Practice</th></tr></thead>
+          <tbody>
+            <tr><td>Length</td><td>8 characters</td><td>16+ characters or passphrase</td></tr>
+            <tr><td>Complexity</td><td>Mixed case + numbers</td><td>Add symbols; use passphrases</td></tr>
+            <tr><td>MFA</td><td>For privileged accounts</td><td>For all accounts (mandatory)</td></tr>
+            <tr><td>Manager</td><td>Recommended</td><td>Mandatory (corporate-managed)</td></tr>
+            <tr><td>Breach check</td><td>At creation</td><td>Continuous monitoring (HaveIBeenPwned API)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">💻</span><span class="at">Remote Work &amp; BYOD Policy</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Defines security requirements for employees working from home or using personal devices for work. Critical components: mandatory VPN use for corporate resource access, approved device list, MDM (Mobile Device Management) enrollment requirement, prohibition of work data on unsecured personal devices, screen lock requirements.</p>
+        <p class="p">Post-COVID, this has become one of the most important policies for organisations as remote work became permanent for many roles, dramatically expanding the attack surface beyond the corporate perimeter.</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">📊</span><span class="at">Data Classification &amp; Handling Policy</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Defines how different types of data must be classified (Public, Internal, Confidential, Restricted), stored, transmitted, shared, and disposed of. Encryption requirements for each classification. Sharing restrictions. Retention and disposal procedures (secure deletion, certificate of destruction for hardware).</p>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🚨</span><span class="at">Incident Response Policy</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">Defines what constitutes a security incident, who must be notified and when, the escalation chain, the roles and responsibilities of the IR team, and the requirement to preserve evidence. Mandates timeliness of notifications — GDPR requires notification to supervisory authority within 72 hours of discovering a breach.</p>
+        <p class="p">Every employee must know: <em>Who do I call if I think I've been phished? What do I do if I find a USB drive? How do I report a suspicious email?</em> The policy answers these questions.</p>
+      </div>
+    </div>
+
+    <div class="sh">Policy Lifecycle</div>
+    <div class="flow">
+      <div class="fs"><div class="fn" style="background:rgba(74,26,107,.1);color:var(--sp);">1</div><div class="fc"><div class="ft">Creation &amp; Approval</div><div class="fd">Written by security team, reviewed by legal, HR, and business stakeholders, approved by CISO and executive leadership. Executive sponsorship is critical for enforcement.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(74,26,107,.1);color:var(--sp);">2</div><div class="fc"><div class="ft">Communication &amp; Training</div><div class="fd">All employees trained on relevant policies at onboarding and annually thereafter. Attestation required — employees sign that they have read and understood the policy.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(74,26,107,.1);color:var(--sp);">3</div><div class="fc"><div class="ft">Enforcement &amp; Compliance Monitoring</div><div class="fd">Technical controls enforce where possible (DLP tools, firewall rules). Audits measure compliance. HR enforces consequences for violations — from retraining to termination.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(74,26,107,.1);color:var(--sp);">4</div><div class="fc"><div class="ft">Review &amp; Update</div><div class="fd">Policies reviewed at minimum annually and after significant incidents, technology changes, or regulatory updates. Outdated policies become compliance liabilities.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T12 — THREAT MANAGEMENT
+══════════════════════════════════ -->
+<div id="t12" class="topic fi">
+  <div class="topic-header" style="background:rgba(26,92,58,.05);border-color:rgba(26,92,58,.2);">
+    <div class="t-icon">📡</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--tm)">Topic 12</div><div class="t-title" style="color:var(--tm)">Threat Management</div></div>
+    <div class="topic-bg-num">12</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(26,92,58,.15);">
+    <div class="defbox" style="border-left-color:var(--tm);">
+      <div class="dl" style="color:var(--tm)">Definition</div>
+      <div class="dt"><strong>Threat Management</strong> is the continuous, proactive process of identifying, assessing, prioritising, and responding to cyber threats before they materialise into incidents — integrating threat intelligence, risk analysis, and operational response into a unified programme.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--tm);">
+      <div class="hl">Hinglish Explanation</div>
+      Threat management matlab <strong>sirf react karna nahi — pehle se anticipate karna</strong>. Jaise ek good army general sirf enemy ke attack ka wait nahi karta — wo pehle se intelligence gather karta hai ki enemy kahan hai, kya plan hai, aur apni defences accordingly position karta hai. Threat management exactly yahi karta hai cyber world mein — "aane wale attacks ki intelligence collect karo aur defences taiyaar karo."
+    </div>
+
+    <div class="sh">Threat Intelligence (TI)</div>
+    <p class="p"><strong>Threat Intelligence</strong> is evidence-based knowledge about existing or potential threats — including context, mechanisms, indicators, implications, and actionable advice — enabling informed decisions about responding to those threats.</p>
+    <div class="g3">
+      <div class="card"><div class="ct">Strategic TI</div><div class="cx">High-level trends for executives: "Nation-state attacks on financial sector have increased 40% this quarter." Informs budget and policy decisions. Not technical.</div></div>
+      <div class="card"><div class="ct">Operational TI</div><div class="cx">Specific upcoming campaigns: "APT28 is currently targeting Indian defence contractors via LinkedIn spear phishing." Informs security posture changes.</div></div>
+      <div class="card"><div class="ct">Tactical TI</div><div class="cx">Technical IOCs (Indicators of Compromise): specific IP addresses, domain names, file hashes, YARA rules. Directly imported into SIEM, firewalls, and EDR for automated blocking.</div></div>
+    </div>
+
+    <div class="sh">IOC vs IOA</div>
+    <div class="g2">
+      <div class="card"><div class="ct">IOC — Indicator of Compromise</div><div class="cx"><strong>Reactive</strong> — evidence that a system has already been compromised. Malicious IP/domain, malware file hash, known C2 URL, suspicious registry key. Used to detect ongoing or past breaches.</div></div>
+      <div class="card"><div class="ct">IOA — Indicator of Attack</div><div class="cx"><strong>Proactive</strong> — patterns that suggest an attack is in progress even without known IOCs. Unusual process spawning PowerShell, credential dumping behaviour, lateral movement patterns. Detects zero-days and novel malware.</div></div>
+    </div>
+
+    <div class="sh">The MITRE ATT&CK Framework</div>
+    <p class="p">MITRE ATT&CK is a globally-accessible knowledge base of adversary tactics, techniques, and procedures (TTPs) based on real-world observations. It maps 14 tactical categories (from Initial Access to Impact) across hundreds of specific techniques. Security teams use it to:</p>
+    <div class="g2">
+      <div class="card"><div class="ci">🗺️</div><div class="ct">Threat Modelling</div><div class="cx">Map which ATT&CK techniques are most relevant to your organisation and industry, then verify you have detection coverage for each one.</div></div>
+      <div class="card"><div class="ci">🔴</div><div class="ct">Red Team Planning</div><div class="cx">Red teams use ATT&CK to design realistic attack simulations that mirror real adversary behaviour — not just generic pen tests.</div></div>
+      <div class="card"><div class="ci">📊</div><div class="ct">Coverage Analysis</div><div class="cx">Visualise your detection gaps — "We detect Initial Access well but have weak coverage of Lateral Movement techniques."</div></div>
+      <div class="card"><div class="ci">🔗</div><div class="ct">Threat Intelligence Mapping</div><div class="cx">Map threat actor TTPs to ATT&CK techniques, then verify your defences address those specific techniques.</div></div>
+    </div>
+
+    <div class="sh">IDS / IPS — Intrusion Detection &amp; Prevention Systems</div>
+    <table class="tbl">
+      <thead><tr><th>System</th><th>Action</th><th>Position</th><th>Detection Method</th></tr></thead>
+      <tbody>
+        <tr><td><strong>NIDS</strong> (Network IDS)</td><td>Detect only — generates alerts</td><td>Passive tap on network segment</td><td>Signature + anomaly based</td></tr>
+        <tr><td><strong>HIDS</strong> (Host IDS)</td><td>Detect only</td><td>Agent on individual host</td><td>File integrity, log analysis, behaviour</td></tr>
+        <tr><td><strong>NIPS</strong> (Network IPS)</td><td>Detect + Block inline</td><td>Inline — traffic passes through it</td><td>Signature + anomaly — drops malicious packets</td></tr>
+        <tr><td><strong>HIPS</strong> (Host IPS)</td><td>Detect + Block on host</td><td>Agent on individual host</td><td>Blocks suspicious processes/connections in real time</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T13 — DEFENDING AGAINST MALWARE
+══════════════════════════════════ -->
+<div id="t13" class="topic fi">
+  <div class="topic-header" style="background:rgba(139,0,0,.05);border-color:rgba(139,0,0,.2);">
+    <div class="t-icon">🦠</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--mal)">Topic 13</div><div class="t-title" style="color:var(--mal)">Defending Against Malicious Software</div></div>
+    <div class="topic-bg-num">13</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(139,0,0,.15);">
+    <div class="defbox" style="border-left-color:var(--mal);">
+      <div class="dl" style="color:var(--mal)">Definition</div>
+      <div class="dt">Defending against malicious software involves deploying a layered set of technical controls, policies, and user behaviours that prevent malware from entering an environment, detect it when prevention fails, contain its spread, eradicate it from infected systems, and recover normal operations — following the <strong>prevent → detect → respond → recover</strong> lifecycle.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--mal);">
+      <div class="hl">Hinglish Explanation</div>
+      Malware defense sirf "antivirus install karo" nahi hai. Ye ek <strong>multi-layer strategy</strong> hai — jaise ek fort ke bahar paani ki khaai (network firewall), phir deewarein (email filtering), phir andar chowkidar (endpoint protection), phir safe vault (backup). Agar koi ek layer fail ho toh doosri rok le. <strong>Koi ek solution 100% malware nahi rok sakta</strong>.
+    </div>
+
+    <div class="sh">The Anti-Malware Defence Stack</div>
+
+    <div class="acc">
+      <div class="acc-h open" onclick="tog(this)"><span class="ai">📧</span><span class="at">Email Security Gateway — Stop at the Door</span><span class="aa">▶</span></div>
+      <div class="acc-body open">
+        <p class="p">The primary malware delivery vector is <strong>email</strong> — over 90% of malware arrives via phishing attachments or malicious links. Email security gateways inspect every incoming and outgoing email before it reaches the user's inbox.</p>
+        <div class="g2">
+          <div>
+            <p class="p"><strong>Technical Controls:</strong></p>
+            <ul style="font-size:13.5px;color:var(--muted);margin-left:16px;line-height:1.82;">
+              <li><strong>SPF, DKIM, DMARC</strong> — anti-spoofing protocols; verify sender domain authenticity</li>
+              <li><strong>Attachment sandboxing</strong> — execute suspicious attachments in isolated VM; observe behaviour before delivery</li>
+              <li><strong>URL scanning</strong> — rewrite and scan all URLs at click-time, not just delivery</li>
+              <li><strong>Anti-virus engine</strong> — scan attachments against signature database</li>
+              <li><strong>ML-based phishing detection</strong> — analyse email header, body, sender reputation</li>
+            </ul>
+          </div>
+          <div>
+            <p class="p"><strong>Tools:</strong></p>
+            <div class="tags"><span class="tag tr">Proofpoint</span><span class="tag tr">Mimecast</span><span class="tag tr">Microsoft Defender for Office 365</span><span class="tag tr">Google Workspace Security</span><span class="tag tr">Barracuda</span></div>
+            <p class="p" style="margin-top:12px;"><strong>Key metric:</strong> A well-tuned email gateway blocks 99.9%+ of malicious emails. The remaining 0.1% makes endpoint protection the next line of defence.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">💻</span><span class="at">Endpoint Protection — EDR vs Traditional AV</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>Traditional Antivirus (AV)</strong> works by matching files against a signature database of known malware. It fails against: zero-day malware (no signature yet), polymorphic malware (changes its signature), and fileless malware (lives in memory — no file to scan).</p>
+        <p class="p"><strong>EDR (Endpoint Detection and Response)</strong> overcomes these limitations through behavioural analysis. Instead of asking "is this file known-bad?", it asks "is this process behaving like malware?" — regardless of whether it's seen before.</p>
+        <div class="code"><pre><span class="cmt"># EDR behavioural detection examples:</span>
+
+<span class="cmt"># 1. Word spawning PowerShell (Living-off-the-land attack)</span>
+<span class="ck">Alert:</span> word.exe → cmd.exe → powershell.exe -enc [base64]
+<span class="cmt"># Legitimate Word never spawns PowerShell → malware indicator</span>
+
+<span class="cmt"># 2. Credential dumping attempt</span>
+<span class="ck">Alert:</span> svchost.exe → accessing lsass.exe memory
+<span class="cmt"># LSASS holds password hashes → Mimikatz pattern</span>
+
+<span class="cmt"># 3. Ransomware behaviour pattern</span>
+<span class="ck">Alert:</span> Process encrypting 500+ files/minute + deleting VSS shadow copies
+<span class="cmt"># Auto-isolate host before ransomware spreads to network shares</span></pre></div>
+        <div class="tags"><span class="tag tr">CrowdStrike Falcon</span><span class="tag tr">SentinelOne</span><span class="tag tr">Microsoft Defender for Endpoint</span><span class="tag tr">Carbon Black</span><span class="tag tr">Cybereason</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🏝️</span><span class="at">Network Sandboxing &amp; Zero Trust</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">A <strong>sandbox</strong> is an isolated, instrumented environment where suspicious files are detonated (executed) and observed — without risk to real systems. The sandbox records every action: files created, registry keys modified, network connections attempted, processes spawned. This behavioural profile determines whether the file is malware.</p>
+        <div class="hin" style="border-left-color:var(--mal);margin:0 0 10px;">
+          <div class="hl">Analogy</div>
+          Imagine ek bomb squad — suspicious package milta hai. Usse normal area mein nahi kholte — ek controlled, bomb-proof chamber mein kholte hain. Agar bomb tha — chamber safe rakhta hai. Cyber sandbox exactly yahi karta hai malicious files ke liye.
+        </div>
+        <div class="tags"><span class="tag tr">Palo Alto WildFire</span><span class="tag tr">Cuckoo Sandbox (open source)</span><span class="tag tr">Any.run</span><span class="tag tr">VirusTotal</span><span class="tag tr">VMRay</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">💾</span><span class="at">Backup Strategy — The Last Line of Defence Against Ransomware</span><span class="b bc">Critical</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p">A robust backup strategy is the ultimate defence against ransomware. Even if all prevention fails and ransomware encrypts everything — if you have good backups, you can recover without paying the ransom. The industry-standard backup strategy is <strong>3-2-1-1-0</strong>:</p>
+        <div class="flow">
+          <div class="fs"><div class="fn" style="background:rgba(139,0,0,.1);color:var(--mal);">3</div><div class="fc"><div class="ft">3 copies of data</div><div class="fd">Primary data + 2 backup copies. Multiple copies protect against single-point failures.</div></div></div>
+          <div class="fs"><div class="fn" style="background:rgba(139,0,0,.1);color:var(--mal);">2</div><div class="fc"><div class="ft">On 2 different media types</div><div class="fd">E.g., internal drive + external tape/NAS. Prevents single-media failure destroying all copies.</div></div></div>
+          <div class="fs"><div class="fn" style="background:rgba(139,0,0,.1);color:var(--mal);">1</div><div class="fc"><div class="ft">1 copy offsite</div><div class="fd">Cloud backup or physical offsite tape. Protects against fire, flood, or physical theft of on-premise systems.</div></div></div>
+          <div class="fs"><div class="fn" style="background:rgba(139,0,0,.1);color:var(--mal);">1</div><div class="fc"><div class="ft">1 copy offline / immutable</div><td class="fd">Air-gapped or write-once (WORM) backup. Ransomware cannot encrypt what it cannot access or modify.</td></div></div>
+          <div class="fs"><div class="fn" style="background:rgba(139,0,0,.1);color:var(--mal);">0</div><div class="fc"><div class="ft">0 backup errors after testing</div><div class="fd">Regularly test restoration — "untested backups are not backups." 30% of backups fail during restore attempts (Veeam study).</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)"><span class="ai">🌐</span><span class="at">DNS Filtering, Web Proxy &amp; Application Whitelisting</span><span class="aa">▶</span></div>
+      <div class="acc-body">
+        <p class="p"><strong>DNS filtering</strong> blocks connections to known malicious domains at the DNS resolution level — before any TCP connection is made. If a user's device attempts to resolve a known C2 domain, the DNS filter returns NXDOMAIN (domain not found), breaking the malware's ability to phone home.</p>
+        <p class="p"><strong>Web proxy</strong> intercepts all web traffic, scanning for malware downloads, enforcing category-based URL policies, and inspecting SSL traffic.</p>
+        <p class="p"><strong>Application whitelisting</strong> (allowlisting) only permits pre-approved executables to run on endpoints. Any unknown executable — including novel malware — is blocked by default. Most powerful but operationally complex to maintain.</p>
+        <div class="tags"><span class="tag tg">Cisco Umbrella (DNS)</span><span class="tag tg">Cloudflare Gateway</span><span class="tag tg">Zscaler Web Security</span><span class="tag tg">AppLocker (Windows)</span><span class="tag tg">WDAC (Windows Defender App Control)</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="brk"></div>
+
+<!-- ══════════════════════════════════
+     T14 — PATCH MANAGEMENT
+══════════════════════════════════ -->
+<div id="t14" class="topic fi">
+  <div class="topic-header" style="background:rgba(0,95,95,.05);border-color:rgba(0,95,95,.2);">
+    <div class="t-icon">🔄</div>
+    <div class="t-meta"><div class="t-tag" style="color:var(--pm)">Topic 14</div><div class="t-title" style="color:var(--pm)">Software Updates and Patch Management</div></div>
+    <div class="topic-bg-num">14</div>
+  </div>
+  <div class="topic-body" style="border-color:rgba(0,95,95,.15);">
+    <div class="defbox" style="border-left-color:var(--pm);">
+      <div class="dl" style="color:var(--pm)">Definition</div>
+      <div class="dt"><strong>Patch Management</strong> is the systematic process of acquiring, testing, and deploying software updates (patches) to systems, applications, and devices in order to remediate known security vulnerabilities, fix bugs, and maintain system stability — in a timely, controlled, and documented manner.</div>
+    </div>
+    <div class="hin" style="border-left-color:var(--pm);">
+      <div class="hl">Hinglish Explanation</div>
+      Har software mein bugs aur vulnerabilities aate rehte hain — yahi nature of software hai. Vendor patch release karta hai — ek fix. Ab us patch ko apne systems pe lagana <strong>patch management</strong> hai. Ye simple lagta hai lekin 100 servers, 1000 laptops, 50 alag software products ke saath — ye ek complex, critical operation ban jaata hai. <strong>WannaCry ransomware ne sirf un systems ko attack kiya jinpe 2 mahine purana patch nahi laga tha</strong> — patch hote toh attack nahi hota.
+    </div>
+
+    <div class="stats">
+      <div class="sb"><div class="sn" style="color:var(--pm)">60%</div><div class="sl">Breaches via unpatched vulnerabilities</div></div>
+      <div class="sb"><div class="sn" style="color:var(--dos)">15 days</div><div class="sl">Avg time attackers exploit after CVE disclosure</div></div>
+      <div class="sb"><div class="sn" style="color:var(--al)">102 days</div><div class="sl">Avg time organisations take to patch (2023)</div></div>
+      <div class="sb"><div class="sn" style="color:var(--at)">2 months</div><div class="sl">Patch was available before Equifax breach</div></div>
+    </div>
+
+    <div class="sh">The Patch Management Lifecycle</div>
+    <div class="flow">
+      <div class="fs"><div class="fn" style="background:rgba(0,95,95,.1);color:var(--pm);">1</div><div class="fc"><div class="ft">Asset Inventory</div><div class="fd">You cannot patch what you don't know you have. Maintain a comprehensive, up-to-date inventory of all hardware, software, OS versions, and firmware across the entire environment. Tools: Qualys Asset Inventory, Lansweeper, ServiceNow CMDB.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(0,95,95,.1);color:var(--pm);">2</div><div class="fc"><div class="ft">Vulnerability Identification</div><div class="fd">Continuous vulnerability scanning (Nessus, Qualys) identifies which assets have unpatched CVEs. Integrate with patch management tool for automatic ticket creation when critical CVEs are found.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(0,95,95,.1);color:var(--pm);">3</div><div class="fc"><div class="ft">Patch Prioritisation (Risk-Based)</div><div class="fd">Not all patches are equal. Prioritise by: CVSS score, exploitability in the wild (CISA KEV catalogue), asset criticality, exposure (internet-facing vs internal). Critical CVEs on internet-facing systems = highest priority regardless of anything else.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(0,95,95,.1);color:var(--pm);">4</div><div class="fc"><div class="ft">Testing &amp; Staging</div><div class="fd">Never deploy patches directly to production. Test in a staging environment first — patches occasionally break application compatibility. Follow change management process; schedule maintenance windows for critical systems.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(0,95,95,.1);color:var(--pm);">5</div><div class="fc"><div class="ft">Deployment</div><div class="fd">Use patch deployment tools for automated, scalable rollout. Deploy in waves: dev → test → staging → production. Monitor for errors during rollout. Maintain rollback capability for each patch.</div></div></div>
+      <div class="fs"><div class="fn" style="background:rgba(0,95,95,.1);color:var(--pm);">6</div><div class="fc"><div class="ft">Verification &amp; Reporting</div><div class="fd">Post-deployment scanning confirms patch is applied. Generate compliance reports showing patch coverage percentage, mean time to patch (MTTP), and outstanding vulnerabilities. Required by ISO 27001, PCI-DSS, and most cyber insurance policies.</div></div></div>
+    </div>
+
+    <div class="sh">Patching SLA Targets (Recommended)</div>
+    <table class="tbl">
+      <thead><tr><th>Severity</th><th>Internet-Facing Systems</th><th>Internal Systems</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td><span class="b bc">Critical (9.0–10.0)</span></td><td>24–72 hours</td><td>7 days</td><td>Attackers begin exploiting within 15 days of disclosure</td></tr>
+        <tr><td><span class="b bh">High (7.0–8.9)</span></td><td>7 days</td><td>30 days</td><td>High exploitation rate in the wild</td></tr>
+        <tr><td><span class="b bm">Medium (4.0–6.9)</span></td><td>30 days</td><td>90 days</td><td>Lower exploitation risk but must not accumulate</td></tr>
+        <tr><td><span class="b bl">Low (0.1–3.9)</span></td><td>90 days</td><td>Next scheduled cycle</td><td>Minimal risk; batch with regular maintenance</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sh">Patch Management Tooling</div>
+    <div class="g2">
+      <div class="card"><div class="ci">🖥️</div><div class="ct">Enterprise Patch Management</div><div class="cx"><strong>Microsoft WSUS / SCCM / Intune</strong> — Windows endpoints. <strong>Red Hat Satellite</strong> — Linux servers. <strong>Jamf</strong> — macOS/iOS. <strong>Ivanti Patch</strong> — multi-OS. These tools push patches automatically on schedule, report compliance, and support rollback.</div></div>
+      <div class="card"><div class="ci">☁️</div><div class="ct">Cloud &amp; Container Patching</div><div class="cx"><strong>AWS Systems Manager Patch Manager</strong> — automated EC2 patching. <strong>Container image scanning</strong> (Snyk, Trivy) — detect vulnerabilities in base images before deployment. Immutable infrastructure — replace containers rather than patching in place.</div></div>
+    </div>
+
+    <div class="sh">When You Cannot Patch — Compensating Controls</div>
+    <p class="p">Sometimes patching is impossible — legacy systems with no vendor support, operational technology (OT/ICS) that cannot be taken offline, or critical applications that break when patched. In these cases, compensating controls reduce risk:</p>
+    <div class="tags">
+      <span class="tag tp">Network isolation / micro-segmentation</span>
+      <span class="tag tp">Web Application Firewall rule blocking exploit pattern</span>
+      <span class="tag tp">Disable vulnerable service/feature if not needed</span>
+      <span class="tag tp">Intrusion Prevention System (IPS) virtual patching</span>
+      <span class="tag tp">Enhanced monitoring and logging</span>
+      <span class="tag tp">Application whitelisting</span>
+    </div>
+
+    <div class="rc" style="border-top-color:var(--pm);">
+      <div class="rl">Patch Failure Case Study</div>
+      <div class="rh">WannaCry (2017) — 200,000 victims, $4 billion damage. Preventable with a 2-month-old patch.</div>
+      <div class="rb">Microsoft released MS17-010 (fixing EternalBlue — SMB vulnerability) on 14 March 2017. WannaCry launched on 12 May 2017 — 59 days later. Every organisation that applied the patch was safe. Every organisation that did not was hit. The NHS lost £92 million. FedEx lost $400 million. Maersk lost $300 million. This single event permanently changed how organisations approach patch management urgency — and remains the most cited argument for any cybersecurity budget request.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     QUIZ
+══════════════════════════════════ -->
+<div class="brk"></div>
+<div id="quiz" class="quiz fi">
+  <h2>Chapter Review Quiz</h2>
+  <div class="qs">// Unit 2 · Module 2 — 12 questions covering all 14 safeguard topics //</div>
+
+  <div class="qc"><div class="qt">1. In RBAC, permissions are assigned to _____, not directly to individual users.</div><div class="qos">
+    <button class="qb" onclick="qa(this,0,0)">A) Specific files and folders</button>
+    <button class="qb" onclick="qa(this,0,1)">B) Roles, which users are then assigned to ✓</button>
+    <button class="qb" onclick="qa(this,0,2)">C) Security groups based on IP address</button>
+  </div><div class="qfb" id="f0"></div></div>
+
+  <div class="qc"><div class="qt">2. Which authentication factor is a FIDO2 hardware security key?</div><div class="qos">
+    <button class="qb" onclick="qa(this,1,0)">A) Something you know</button>
+    <button class="qb" onclick="qa(this,1,1)">B) Something you are</button>
+    <button class="qb" onclick="qa(this,1,2)">C) Something you have ✓</button>
+  </div><div class="qfb" id="f1"></div></div>
+
+  <div class="qc"><div class="qt">3. The False Acceptance Rate (FAR) in biometrics measures:</div><div class="qos">
+    <button class="qb" onclick="qa(this,2,0)">A) How often legitimate users are rejected</button>
+    <button class="qb" onclick="qa(this,2,1)">B) How often impostors are incorrectly accepted ✓</button>
+    <button class="qb" onclick="qa(this,2,2)">C) The speed of fingerprint scanning</button>
+  </div><div class="qfb" id="f2"></div></div>
+
+  <div class="qc"><div class="qt">4. A honeypot is valuable because any interaction with it is:</div><div class="qos">
+    <button class="qb" onclick="qa(this,3,0)">A) Probably legitimate user activity that should be logged</button>
+    <button class="qb" onclick="qa(this,3,1)">B) By definition suspicious — no legitimate user should ever access it ✓</button>
+    <button class="qb" onclick="qa(this,3,2)">C) Part of automated vulnerability scanning</button>
+  </div><div class="qfb" id="f3"></div></div>
+
+  <div class="qc"><div class="qt">5. Which firewall type operates at Layer 7 and can inspect the actual content of HTTP traffic for SQL injection?</div><div class="qos">
+    <button class="qb" onclick="qa(this,4,0)">A) Stateful inspection firewall</button>
+    <button class="qb" onclick="qa(this,4,1)">B) Packet filtering firewall</button>
+    <button class="qb" onclick="qa(this,4,2)">C) Web Application Firewall (WAF) / Application Layer Firewall ✓</button>
+  </div><div class="qfb" id="f4"></div></div>
+
+  <div class="qc"><div class="qt">6. What is the key difference between a vulnerability scan and a penetration test?</div><div class="qos">
+    <button class="qb" onclick="qa(this,5,0)">A) Vulnerability scans cost more and take longer</button>
+    <button class="qb" onclick="qa(this,5,1)">B) Vulnerability scans identify weaknesses without exploiting them; pen tests actually exploit vulnerabilities to prove impact ✓</button>
+    <button class="qb" onclick="qa(this,5,2)">C) Penetration tests only work on web applications</button>
+  </div><div class="qfb" id="f5"></div></div>
+
+  <div class="qc"><div class="qt">7. In ethical hacking, why is a signed "Statement of Work" and "Rules of Engagement" absolutely mandatory BEFORE testing begins?</div><div class="qos">
+    <button class="qb" onclick="qa(this,6,0)">A) It is just a formality that most testers skip for speed</button>
+    <button class="qb" onclick="qa(this,6,1)">B) Without written authorisation, the same actions that constitute ethical hacking are criminal — regardless of intent ✓</button>
+    <button class="qb" onclick="qa(this,6,2)">C) It is only needed for government systems, not private companies</button>
+  </div><div class="qfb" id="f6"></div></div>
+
+  <div class="qc"><div class="qt">8. The 3-2-1-1-0 backup rule's "1 offline/immutable copy" specifically defends against which threat?</div><div class="qos">
+    <button class="qb" onclick="qa(this,7,0)">A) SQL injection attacks on the database</button>
+    <button class="qb" onclick="qa(this,7,1)">B) Ransomware that encrypts all network-connected storage including backups ✓</button>
+    <button class="qb" onclick="qa(this,7,2)">C) Phishing emails targeting backup administrators</button>
+  </div><div class="qfb" id="f7"></div></div>
+
+  <div class="qc"><div class="qt">9. A security policy document defines the "what" and "why" of security requirements. What documents define the "how"?</div><div class="qos">
+    <button class="qb" onclick="qa(this,8,0)">A) CVE databases and CVSS scores</button>
+    <button class="qb" onclick="qa(this,8,1)">B) Procedures and standards that support the policy ✓</button>
+    <button class="qb" onclick="qa(this,8,2)">C) Threat intelligence feeds</button>
+  </div><div class="qfb" id="f8"></div></div>
+
+  <div class="qc"><div class="qt">10. A CVSS score of 9.8 means the vulnerability is "Critical." What is the recommended patching SLA for a Critical CVE on an internet-facing system?</div><div class="qos">
+    <button class="qb" onclick="qa(this,9,0)">A) Within 90 days — it can wait for the next quarterly patch cycle</button>
+    <button class="qb" onclick="qa(this,9,1)">B) Within 24–72 hours ✓</button>
+    <button class="qb" onclick="qa(this,9,2)">C) Only when the vendor provides a fix — which may take months</button>
+  </div><div class="qfb" id="f9"></div></div>
+
+  <div class="qc"><div class="qt">11. The MITRE ATT&CK framework is primarily used to:</div><div class="qos">
+    <button class="qb" onclick="qa(this,10,0)">A) Automatically patch vulnerabilities in enterprise systems</button>
+    <button class="qb" onclick="qa(this,10,1)">B) Map and understand adversary tactics and techniques to improve detection coverage and red team planning ✓</button>
+    <button class="qb" onclick="qa(this,10,2)">C) Rate the severity of vulnerabilities on a 0–10 scale</button>
+  </div><div class="qfb" id="f10"></div></div>
+
+  <div class="qc"><div class="qt">12. WannaCry ransomware (2017) infected 200,000 systems causing $4 billion in damage. This was directly caused by:</div><div class="qos">
+    <button class="qb" onclick="qa(this,11,0)">A) A zero-day vulnerability with no available patch</button>
+    <button class="qb" onclick="qa(this,11,1)">B) Failure to apply a 59-day-old patch (MS17-010) that Microsoft had already released ✓</button>
+    <button class="qb" onclick="qa(this,11,2)">C) An insider threat at Microsoft</button>
+  </div><div class="qfb" id="f11"></div></div>
+
+</div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="fcr">
+    <span class="fl">© Copyright 2025 — All Rights Reserved</span>
+    <span class="fn2">Bhanu Pratap Singh Rajpurohit</span>
+    <span class="fs2">Unit 2 · Module 2 · Cyber Security Safeguards &amp; Protection Mechanisms</span>
+  </div>
+  <div style="font-family:var(--font-m);font-size:10.5px;color:rgba(255,255,255,.2);letter-spacing:1px;margin-top:10px;">
+    Unit 2 M1: Vulnerabilities &amp; Threats &nbsp;·&nbsp; Unit 2 M2: Safeguards &amp; Protection &nbsp;·&nbsp; Unit 2 M3: Coming Next
+  </div>
+</footer>
+
+<script>
+/* ACCORDION */
+function tog(h){h.classList.toggle('open');const b=h.nextElementSibling;b.classList.toggle('open');}
+
+/* QUIZ */
+const ANS=[1,2,1,1,2,1,1,1,1,1,1,1];
+const FB=[
+  {ok:"Correct! RBAC assigns permissions to roles. Users are assigned to roles. Changing a role instantly updates all members — scalable and auditable.",bad:"In RBAC, permissions attach to roles (e.g., 'Manager', 'Auditor'), then users are assigned those roles."},
+  {ok:"Exactly right. A FIDO2 key is a physical possession — 'something you have.' It generates cryptographic proofs without storing passwords.",bad:"FIDO2 hardware key = physical device you must possess = 'Something you have' factor."},
+  {ok:"FAR = False Acceptance Rate = probability that an impostor is incorrectly accepted. Critical for security — you want this as low as possible.",bad:"FAR measures the probability an impostor is wrongly accepted. FRR measures the probability a legitimate user is wrongly rejected."},
+  {ok:"Exactly. Because no legitimate process should ever contact a honeypot, any access — whether a scan, a ping, or a login attempt — is an immediate high-confidence alert of malicious activity.",bad:"Honeypots work on the principle of 'no legitimate user ever accesses this.' Therefore any interaction = suspicious = immediate high-fidelity alert."},
+  {ok:"A WAF (Web Application Firewall) operates at Layer 7 — it understands HTTP/HTTPS content and can detect application-layer attacks like SQLi, XSS, and CSRF.",bad:"Only application-layer firewalls (WAF) can inspect HTTP content. Packet and stateful firewalls work at lower layers and see only IP/port headers."},
+  {ok:"Correct. Vulnerability scanning is automated identification only — it does not exploit. Pen testing involves manual exploitation to demonstrate real business impact.",bad:"The key distinction: vulnerability scans identify but do not exploit. Pen tests actually attempt exploitation to prove real impact."},
+  {ok:"This is non-negotiable. Without written authorisation, the penetration tester is committing the same crimes as a malicious hacker — regardless of good intent. Verbal permission is insufficient.",bad:"Critical point: without written authorisation (SoW + RoE), ethical hacking = criminal hacking. Intent does not provide legal protection."},
+  {ok:"Ransomware increasingly targets backup systems to prevent recovery. An offline or immutable backup that ransomware cannot reach is the definitive defence — enabling recovery without paying ransom.",bad:"The offline/immutable copy specifically defends against ransomware deleting or encrypting backups. It cannot encrypt what it cannot access."},
+  {ok:"Policies state the 'what' and 'why.' Procedures (step-by-step instructions) and standards (specific measurable requirements) state the 'how.'",bad:"Procedures define the step-by-step 'how to implement' the policy. Standards define specific measurable requirements that support the policy."},
+  {ok:"Critical CVEs on internet-facing systems: 24–72 hours. Attackers begin exploiting within 15 days of disclosure on average — organisations that wait 90 days are almost certainly exploited.",bad:"Critical CVEs on internet-facing systems require 24–72 hour patching. The average exploitation begins within 15 days of public disclosure."},
+  {ok:"MITRE ATT&CK is a knowledge base of adversary TTPs used for threat modelling, improving detection coverage, red team planning, and mapping threat intelligence.",bad:"MITRE ATT&CK = framework for understanding adversary TTPs. CVSS = vulnerability scoring. Patch management = patching."},
+  {ok:"MS17-010 was released 14 March 2017. WannaCry launched 12 May 2017 — 59 days later. Every patched system was safe. This is the defining argument for aggressive patch management SLAs.",bad:"WannaCry exploited MS17-010 — a vulnerability Microsoft had patched 59 days earlier. Every organisation that applied the patch was safe. This was entirely preventable."}
+];
+function qa(btn,qi,oi){
+  const opts=btn.parentElement.querySelectorAll('.qb');
+  opts.forEach(o=>o.disabled=true);
+  const ok=oi===ANS[qi];
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok)opts[ANS[qi]].classList.add('correct');
+  const fb=document.getElementById('f'+qi);
+  fb.className='qfb show '+(ok?'ok':'bad');
+  fb.textContent=ok?FB[qi].ok:FB[qi].bad;
+}
+
+/* FADE IN */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:.06});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+/* SMOOTH NAV */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
+});
+</script>
+</body>
+</html>
